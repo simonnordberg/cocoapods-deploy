@@ -84,11 +84,11 @@ module Pod
           end
 
           def dependencies_to_fetch
-            podfile.dependencies
+            self.podfile.dependencies
           end
 
           def pods_to_fetch
-            podfile.dependencies
+            self.podfile.dependencies
           end
 
           def generate_version_locking_dependencies
