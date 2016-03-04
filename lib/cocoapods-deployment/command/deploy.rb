@@ -38,16 +38,15 @@ module Pod
       def run
         verify_podfile_exists!
         verify_lockfile_exists!
-        run_install_with_update(false)
-      end
 
-      def run_install_with_update(update)
+        podfile.dependencies.each do |dep|
+          version = config.lockfile.version(dep.name)
+          url = "https://github.com/CocoaPods/Specs/tree/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
+          dep.external_source = { :podspec => url }
+        end
 
         config.skip_repo_update = true
-
-        installer = DeploymentInstaller.new(config.sandbox, config.podfile, config.lockfile)
-        installer.update = update
-        installer.install!
+        run_install_with_update(false)
       end
     end
   end
