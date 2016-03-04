@@ -83,6 +83,10 @@ module Pod
             false
           end
 
+          def dependencies_to_fetch
+            podfile.dependencies
+          end
+
           def pods_to_fetch
             podfile.dependencies
           end
