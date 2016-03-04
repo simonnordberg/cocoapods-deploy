@@ -92,20 +92,7 @@ module Pod
           end
 
           def generate_version_locking_dependencies
-             graph = Installer::Analyzer::LockingDependencyAnalyzer.unlocked_dependency_graph
-
-             explicit_dependencies = lockfile.to_hash['DEPENDENCIES'] || []
-             explicit_dependencies.each do |string|
-               dependency = Dependency.new(string)
-               dependency_graph.add_vertex(dependency.name, nil, true)
-             end
-
-             pods = lockfile.to_hash['PODS'] || []
-             pods.each do |pod|
-               add_to_dependency_graph(pod, [], dependency_graph)
-             end
-
-             dependency_graph
+             LockingDependencyAnalyzer.generate_version_locking_dependencies(lockfile, [])
           end
         end
       end
