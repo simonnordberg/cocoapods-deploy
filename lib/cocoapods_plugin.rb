@@ -1,3 +1,3 @@
-require 'cocoapods-deployment/command'
-require 'cocoapods-deployment/deploy_installer'
-require 'cocoapods-deployment/deploy_analyzer'
+require 'cocoapods-deploy/deploy_installer'
+require 'cocoapods-deploy/deploy_analyzer'
+require 'cocoapods-deploy/command'
