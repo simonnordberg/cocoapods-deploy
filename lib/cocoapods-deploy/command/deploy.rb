@@ -80,7 +80,6 @@ module Pod
 
         #Hack to be able to override dependencies
         config.podfile.lockfile = config.lockfile
-        puts config.podfile.dependencies
 
         config.skip_repo_update = true
         run_install_with_update(false)
