@@ -50,7 +50,7 @@ module Pod
 
         UI.section('Deploying Pods') do
 
-        dependencies = config.podfile.dependencies.reject(&:external_source).map do |dep|
+        deployments = config.podfile.dependencies.reject(&:external_source).map do |dep|
           version = config.lockfile.version(dep.name)
           url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
 
@@ -63,7 +63,7 @@ module Pod
 
         config.podfile.instance_eval do
           def dependencies
-            dependencies
+            deployments
           end
         end
 
