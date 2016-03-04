@@ -36,6 +36,7 @@ module Pod
       end
 
       def run
+        verify_podfile_exists!
         run_install_with_update(false)
       end
     end
