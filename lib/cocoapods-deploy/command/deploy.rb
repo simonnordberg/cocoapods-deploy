@@ -44,31 +44,33 @@ module Pod
         end
       end
 
-      def run
-        verify_podfile_exists!
-        verify_lockfile_exists!
-
-        UI.section('Deploying Pods') do
-
+      def apply_monkey_patch
         Podfile.class_eval do
 
           alias_method :original_dependencies, :dependencies
 
           def dependencies
-            original_dependencies.reject(&:external_source).map do |dep|
-              version = config.lockfile.version(dep.name)
-              url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
+            UI.section('Deploying Pods') do
+              original_dependencies.reject(&:external_source).map do |dep|
+                version = config.lockfile.version(dep.name)
+                url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
 
-              dep.external_source = { :podspec => url }
-              dep.specific_version = nil
-              dep.requirement = Requirement.create({ :podspec => url })
+                dep.external_source = { :podspec => url }
+                dep.specific_version = nil
+                dep.requirement = Requirement.create({ :podspec => url })
 
-              UI.puts("- #{dep}")
+                UI.puts("- #{dep}")
+              end
             end
           end
         end
+      end
 
-        end
+      def run
+        verify_podfile_exists!
+        verify_lockfile_exists!
+
+        apply_monkey_patch
 
         puts config.podfile.dependencies
 
