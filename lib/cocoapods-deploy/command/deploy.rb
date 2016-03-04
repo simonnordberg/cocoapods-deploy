@@ -43,10 +43,8 @@ module Pod
             []
           end
 
-          def generate_podfile_state
-            state = SpecsState.new
-            state.added.merge(podfile.dependencies.map(&:root_name))
-            state
+          def lockfile
+            nil
           end
         end
       end
