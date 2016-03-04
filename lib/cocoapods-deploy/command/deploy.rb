@@ -50,6 +50,10 @@ module Pod
           def podfile_needs_install?(analysis_result)
             false
           end
+
+          def generate_version_locking_dependencies
+            Installer::Analyzer::LockingDependencyAnalyzer.unlocked_dependency_graph
+          end
         end
       end
 
