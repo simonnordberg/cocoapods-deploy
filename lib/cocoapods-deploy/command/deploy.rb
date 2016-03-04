@@ -58,6 +58,7 @@ module Pod
 
               dep
             end
+          end
         end
       end
 
