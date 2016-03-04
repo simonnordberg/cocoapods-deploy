@@ -83,13 +83,14 @@ module Pod
 
           def dependencies
             original_dependencies.reject(&:external_source).map do |dep|
+
               version = @lockfile.version(dep.name)
-              url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
+              url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.root_name}/#{version}/#{dep.root_name}.podspec.json"
 
               dep.external_source = { :podspec => url }
               dep.specific_version = nil
               dep.requirement = Requirement.create({ :podspec => url })
-              
+
               dep
             end
           end
