@@ -84,7 +84,7 @@ module Pod
           end
 
           def pods_to_fetch
-            self.podfile.dependencies
+            podfile.dependencies
           end
 
           def generate_version_locking_dependencies
@@ -104,14 +104,17 @@ module Pod
           end
 
           def dependencies
-            original_dependencies.reject(&:external_source).map do |dep|
+            original_dependencies.map do |dep|
 
-              version = @lockfile.version(dep.name)
-              url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.root_name}/#{version}/#{dep.root_name}.podspec.json"
+              unless dep.external_source
+                version = @lockfile.version(dep.name)
+                url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.root_name}/#{version}/#{dep.root_name}.podspec.json"
 
-              dep.external_source = { :podspec => url }
-              dep.specific_version = nil
-              dep.requirement = Requirement.create({ :podspec => url })
+                dep.external_source = { :podspec => url }
+                dep.specific_version = nil
+                dep.requirement = Requirement.create({ :podspec => url })
+
+              end
 
               dep
             end
