@@ -54,12 +54,11 @@ module Pod
           version = config.lockfile.version(dep.name)
           url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
 
-          UI.puts("`#{dep.name}` #{version} from #{url}")
           dep.external_source = { :podspec => url }
           dep.specific_version = nil
           dep.requirement = Requirement.create({ :podspec => url })
 
-          puts dep
+          UI.puts("- #{dep}")
         end
 
         end
