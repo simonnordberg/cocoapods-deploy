@@ -42,6 +42,9 @@ module Pod
       end
 
       def run_install_with_update(update)
+
+        config.skip_repo_update = true
+
         installer = DeploymentInstaller.new(config.sandbox, config.podfile, config.lockfile)
         installer.update = update
         installer.install!
