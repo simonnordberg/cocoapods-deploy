@@ -55,10 +55,7 @@ module Pod
           url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
 
           UI.puts("`#{dep.name}` #{version} from #{url}")
-
-          new_dep = Dependency.new(dep.name, { :podspec => url })
-          new_dep.requirement = nil
-          dep.merge(new_dep)
+          dep.requirement = Requirement.create({ :podspec => url })
         end
 
         puts config.podfile.dependencies
