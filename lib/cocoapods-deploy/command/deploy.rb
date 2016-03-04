@@ -57,9 +57,9 @@ module Pod
           UI.puts("`#{dep.name}` #{version} from #{url}")
           dep.specific_version = nil
           dep.requirement = Requirement.create({ :podspec => url })
-        end
 
-        puts config.podfile.dependencies
+          puts dep
+        end
 
         end
 
