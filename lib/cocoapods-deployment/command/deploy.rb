@@ -24,8 +24,6 @@ module Pod
         Install project dependencies to Podfile.lock versions without pulling down full podspec repo.
       DESC
 
-      self.arguments = 'NAME'
-
       def initialize(argv)
         super
       end
