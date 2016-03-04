@@ -58,7 +58,7 @@ module Pod
           end
 
           def dependencies_to_fetch
-            deps_with_external_source
+            podfile.dependencies
           end
 
           def pods_to_fetch
