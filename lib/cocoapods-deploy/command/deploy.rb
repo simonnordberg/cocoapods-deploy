@@ -37,19 +37,27 @@ module Pod
       end
 
       #Hack to force locked dependencies to be installed
-      def apply_resolver_patch
-        Resolver.class_eval do
-          def resolve
-            dependencies = podfile.target_definition_list.flat_map do |target|
-              target.dependencies.each do |dep|
-                @platforms_by_dependency[dep].push(target.platform).uniq!
-              end
-            end
-            @activated = Molinillo::Resolver.new(self, self).resolve(locked_dependencies, locked_dependencies)
-            specs_by_target
-          rescue Molinillo::ResolverError => e
-            handle_resolver_error(e)
+      def apply_target_patch
+        Podfile::TargetDefinition.class_eval do
+
+          alias_method :original_dependencies, :dependencies
+
+          def lockfile=(lockfile)
+            @lockfile = lockfile
           end
+
+          def dependencies
+            original_dependencies.reject(&:external_source).map do |dep|
+
+              version = @lockfile.version(dep.name)
+              url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.root_name}/#{version}/#{dep.root_name}.podspec.json"
+
+              dep.external_source = { :podspec => url }
+              dep.specific_version = nil
+              dep.requirement = Requirement.create({ :podspec => url })
+
+              dep
+            end
         end
       end
 
@@ -111,6 +119,12 @@ module Pod
               dep
             end
           end
+
+          def target_definition_list
+            root_target_definitions.map { |td| [td, td.recursive_children] }.flatten.map do |target|
+              target.lockfile = @lockfile
+            end
+          end
         end
       end
 
@@ -118,7 +132,7 @@ module Pod
         verify_podfile_exists!
         verify_lockfile_exists!
 
-        apply_resolver_patch
+        apply_target_patch
         apply_podfile_patch
 
         #Hack to be able to override dependencies
