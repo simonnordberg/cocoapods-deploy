@@ -86,6 +86,8 @@ module Pod
               dep.requirement = Requirement.create({ :podspec => url })
 
               UI.puts("- #{dep}")
+
+              dep
             end
           end
         end
