@@ -59,6 +59,8 @@ module Pod
           Dependency.new(dep.name, { :podspec => url })
         end
 
+        puts config.podfile.dependencies
+
         end
 
         config.skip_repo_update = true
