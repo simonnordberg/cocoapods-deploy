@@ -1,8 +1,8 @@
 module Pod
   class DeployInstaller < Installer
 
-    include Config::Mixin
-    include InstallationOptions::Mixin
+    include Pod::Config::Mixin
+    include Pod::InstallationOptions::Mixin
 
     def create_analyzer
       DeployAnalyzer.new(sandbox, podfile, lockfile).tap do |analyzer|
