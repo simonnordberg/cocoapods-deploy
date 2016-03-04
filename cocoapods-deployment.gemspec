@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'cocoapods-deployment/gem_version.rb'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'cocoapods-deployment'
+  spec.name          = 'cocoapods-deploy'
   spec.version       = CocoapodsDeployment::VERSION
   spec.authors       = ['James Campbell']
   spec.email         = ['james@supmenow.com']
-  spec.description   = %q{A short description of cocoapods-deployment.}
-  spec.summary       = %q{A longer description of cocoapods-deployment.}
-  spec.homepage      = 'https://github.com/EXAMPLE/cocoapods-deployment'
+  spec.description   = %q{A short description of cocoapods-deploy.}
+  spec.summary       = %q{A longer description of cocoapods-deploy.}
+  spec.homepage      = 'https://github.com/jcampbell05/cocoapods-deploy'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
