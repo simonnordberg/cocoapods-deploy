@@ -57,6 +57,10 @@ module Pod
             false
           end
 
+          def dependencies_to_fetch
+            deps_with_external_source
+          end
+
           def pods_to_fetch
             podfile.dependencies
           end
