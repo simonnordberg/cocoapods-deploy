@@ -18,6 +18,9 @@ module Pod
     #       in the `plugins.json` file, once your plugin is released.
     #
     class Deploy < Command
+
+      include Project
+
       self.summary = 'Install project dependencies to Podfile.lock versions without pulling down full podspec repo.'
 
       self.description = <<-DESC
@@ -33,7 +36,7 @@ module Pod
       end
 
       def run
-        UI.puts "Add your implementation for the cocoapods-deployment plugin in #{__FILE__}"
+        run_install_with_update(false)
       end
     end
   end
