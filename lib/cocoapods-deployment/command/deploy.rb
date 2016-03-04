@@ -27,13 +27,11 @@ module Pod
       self.arguments = 'NAME'
 
       def initialize(argv)
-        @name = argv.shift_argument
         super
       end
 
       def validate!
         super
-        help! 'A Pod name is required.' unless @name
       end
 
       def run
