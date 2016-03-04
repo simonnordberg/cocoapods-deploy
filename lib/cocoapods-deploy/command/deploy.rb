@@ -50,20 +50,21 @@ module Pod
 
         UI.section('Deploying Pods') do
 
-        @deployments = config.podfile.dependencies.reject(&:external_source).map do |dep|
-          version = config.lockfile.version(dep.name)
-          url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
-
-          dep.external_source = { :podspec => url }
-          dep.specific_version = nil
-          dep.requirement = Requirement.create({ :podspec => url })
-
-          UI.puts("- #{dep}")
-        end
-
         config.podfile.instance_eval do
+
+          alias_method :original_dependencies, :dependencies
+
           def dependencies
-            @deployments
+            original_dependencies.reject(&:external_source).map do |dep|
+              version = config.lockfile.version(dep.name)
+              url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
+
+              dep.external_source = { :podspec => url }
+              dep.specific_version = nil
+              dep.requirement = Requirement.create({ :podspec => url })
+
+              UI.puts("- #{dep}")
+            end
           end
         end
 
