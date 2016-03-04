@@ -37,7 +37,14 @@ module Pod
 
       def run
         verify_podfile_exists!
+        verify_lockfile_exists!
         run_install_with_update(false)
+      end
+
+      def run_install_with_update(update)
+        installer = DeploymentInstaller.new(config.sandbox, config.podfile, config.lockfile)
+        installer.update = update
+        installer.install!
       end
     end
   end
