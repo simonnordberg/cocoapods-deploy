@@ -43,8 +43,7 @@ module Pod
             []
           end
 
-          def lockfile
-            nil
+          def generate_podfile_state
           end
         end
       end
