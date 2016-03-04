@@ -29,14 +29,14 @@ module Pod
 
       def initialize(argv)
         super
-        apply_monkey_patch
+        apply_installer_patch
       end
 
       def validate!
         super
       end
 
-      def apply_monkey_patch
+      def apply_installer_patch
         Installer::Analyzer.class_eval do
           def sources
             []
@@ -44,7 +44,7 @@ module Pod
         end
       end
 
-      def apply_monkey_patch
+      def apply_podfile_patch
         Podfile.class_eval do
 
           alias_method :original_dependencies, :dependencies
@@ -70,7 +70,7 @@ module Pod
         verify_podfile_exists!
         verify_lockfile_exists!
 
-        apply_monkey_patch
+        apply_podfile_patch
 
         puts config.podfile.dependencies
 
