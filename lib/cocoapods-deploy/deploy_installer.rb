@@ -1,4 +1,4 @@
-class Pod
+module Pod
   class DeployInstaller < Installer
     def create_analyzer
       DeployAnalyzer.new(sandbox, podfile, lockfile).tap do |analyzer|

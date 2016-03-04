@@ -1,4 +1,4 @@
-class Pod
+module Pod
   class DeployAnalyzer < Analyzer
     def sources
         []
