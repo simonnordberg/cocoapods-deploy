@@ -48,10 +48,17 @@ module Pod
         verify_podfile_exists!
         verify_lockfile_exists!
 
+        UI.section('Deploying Pods') do
+
         config.podfile.dependencies.reject(&:external_source).each do |dep|
           version = config.lockfile.version(dep.name)
           url = "https://github.com/CocoaPods/Specs/tree/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
+
+          UI.labeled("`#{dep.name}` #{version} from #{url}") 
+
           dep.external_source = { :podspec => url }
+        end
+
         end
 
         config.skip_repo_update = true
