@@ -124,6 +124,7 @@ module Pod
           def target_definition_list
             root_target_definitions.map { |td| [td, td.recursive_children] }.flatten.map do |target|
               target.lockfile = @lockfile
+              target
             end
           end
         end
