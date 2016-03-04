@@ -1,1 +1,1 @@
-require 'cocoapods-deployment/command/deployment'
+require 'cocoapods-deployment/command/deploy'
