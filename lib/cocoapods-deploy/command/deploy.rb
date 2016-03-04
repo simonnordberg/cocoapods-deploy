@@ -56,7 +56,9 @@ module Pod
 
           UI.puts("`#{dep.name}` #{version} from #{url}")
 
-          Dependency.new(dep.name, { :podspec => url })
+          new_dep = Dependency.new(dep.name, { :podspec => url })
+          new_dep.requirement = nil
+          dep.merge(new_dep)
         end
 
         puts config.podfile.dependencies
