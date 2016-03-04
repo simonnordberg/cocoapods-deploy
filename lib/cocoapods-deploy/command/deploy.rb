@@ -58,7 +58,7 @@ module Pod
           dep.specific_version = nil
           dep.requirement = Requirement.create({ :podspec => url })
 
-          UI.puts("🚀 #{dep}")
+          UI.puts("- #{dep}")
         end
 
         end
