@@ -50,7 +50,7 @@ module Pod
 
         UI.section('Deploying Pods') do
 
-        config.podfile.instance_eval do
+        Podfile.class_eval do
 
           alias_method :original_dependencies, :dependencies
 
