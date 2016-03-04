@@ -46,6 +46,10 @@ module Pod
           def generate_podfile_state
             nil
           end
+
+          def podfile_needs_install?(analysis_result)
+            false
+          end
         end
       end
 
