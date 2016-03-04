@@ -82,9 +82,6 @@ module Pod
           end
 
           def dependencies
-
-            UI.puts('Deploying Pods')
-
             original_dependencies.reject(&:external_source).map do |dep|
               version = @lockfile.version(dep.name)
               url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
@@ -92,9 +89,7 @@ module Pod
               dep.external_source = { :podspec => url }
               dep.specific_version = nil
               dep.requirement = Requirement.create({ :podspec => url })
-
-              UI.puts("- #{dep}")
-
+              
               dep
             end
           end
