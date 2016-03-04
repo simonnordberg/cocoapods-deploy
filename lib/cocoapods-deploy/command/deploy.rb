@@ -44,6 +44,7 @@ module Pod
           end
 
           def generate_podfile_state
+            Installer::Analyzer::SpecsState.new
           end
         end
       end
