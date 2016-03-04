@@ -92,7 +92,7 @@ module Pod
           end
 
           def generate_version_locking_dependencies
-             LockingDependencyAnalyzer.generate_version_locking_dependencies(lockfile, [])
+             Installer::Analyzer::LockingDependencyAnalyzer.generate_version_locking_dependencies(lockfile, [])
           end
         end
       end
