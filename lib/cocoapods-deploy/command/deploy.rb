@@ -47,6 +47,9 @@ module Pod
             nil
           end
 
+          def store_existing_checkout_options
+          end
+
           def podfile_needs_install?(analysis_result)
             false
           end
