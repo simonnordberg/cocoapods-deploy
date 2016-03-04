@@ -118,6 +118,7 @@ module Pod
         verify_podfile_exists!
         verify_lockfile_exists!
 
+        apply_resolver_patch
         apply_podfile_patch
 
         #Hack to be able to override dependencies
