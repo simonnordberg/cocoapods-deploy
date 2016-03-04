@@ -1,2 +1,2 @@
+require 'cocoapods-deploy/dependency'
 require 'cocoapods-deploy/command'
-require 'cocoapods-deploy/requirement'
