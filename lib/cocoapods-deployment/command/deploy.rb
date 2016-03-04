@@ -18,10 +18,10 @@ module Pod
     #       in the `plugins.json` file, once your plugin is released.
     #
     class Deploy < Command
-      self.summary = 'Short description of cocoapods-deployment.'
+      self.summary = 'Install project dependencies to Podfile.lock versions without pulling down full podspec repo.'
 
       self.description = <<-DESC
-        Longer description of cocoapods-deployment.
+        Install project dependencies to Podfile.lock versions without pulling down full podspec repo.
       DESC
 
       self.arguments = 'NAME'
