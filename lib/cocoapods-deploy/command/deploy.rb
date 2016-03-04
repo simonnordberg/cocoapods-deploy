@@ -54,7 +54,7 @@ module Pod
           version = config.lockfile.version(dep.name)
           url = "https://github.com/CocoaPods/Specs/tree/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
 
-          UI.labeled("`#{dep.name}` #{version} from #{url}") 
+          UI.puts("`#{dep.name}` #{version} from #{url}") 
 
           dep.external_source = { :podspec => url }
         end
