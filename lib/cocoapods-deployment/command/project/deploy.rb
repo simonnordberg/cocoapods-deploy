@@ -17,7 +17,7 @@ module Pod
     # @todo Create a PR to add your plugin to CocoaPods/cocoapods.org
     #       in the `plugins.json` file, once your plugin is released.
     #
-    class Deployment < Command
+    class Deploy < Project
       self.summary = 'Short description of cocoapods-deployment.'
 
       self.description = <<-DESC
