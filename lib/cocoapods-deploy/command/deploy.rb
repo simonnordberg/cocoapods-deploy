@@ -57,6 +57,10 @@ module Pod
             false
           end
 
+          def pods_to_fetch
+            podfile.dependencies
+          end
+
           def generate_version_locking_dependencies
             Installer::Analyzer::LockingDependencyAnalyzer.unlocked_dependency_graph
           end
