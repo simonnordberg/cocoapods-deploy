@@ -1,4 +1,4 @@
-module podfile
+module Pod
   class Dependency
     def requirement=(requirement)
       @requirement = requirement
