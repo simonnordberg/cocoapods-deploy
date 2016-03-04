@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'cocoapods-deployment/gem_version.rb'
+require 'cocoapods-deploy/gem_version.rb'
 
 Gem::Specification.new do |spec|
   spec.name          = 'cocoapods-deploy'
-  spec.version       = CocoapodsDeployment::VERSION
+  spec.version       = CocoapodsDeploy::VERSION
   spec.authors       = ['James Campbell']
   spec.email         = ['james@supmenow.com']
   spec.description   = %q{A short description of cocoapods-deploy.}
