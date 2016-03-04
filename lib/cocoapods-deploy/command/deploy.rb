@@ -42,6 +42,12 @@ module Pod
           def sources
             []
           end
+
+          def generate_podfile_state
+            state = SpecsState.new
+            state.added.merge(podfile.dependencies.map(&:root_name))
+            state
+          end
         end
       end
 
