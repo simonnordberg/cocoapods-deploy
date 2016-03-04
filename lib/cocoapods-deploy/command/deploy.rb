@@ -36,6 +36,7 @@ module Pod
         super
       end
 
+      #Hack to be able to override source installer
       def apply_installer_patch
         Installer::Analyzer.class_eval do
           def sources
@@ -44,15 +45,20 @@ module Pod
         end
       end
 
+      #Hack to be able to override dependencies
       def apply_podfile_patch
         Podfile.class_eval do
 
           alias_method :original_dependencies, :dependencies
 
+          def lockfile=(lockfile)
+            @lockfile = lockfile
+          end
+
           def dependencies
             UI.section('Deploying Pods') do
               original_dependencies.reject(&:external_source).map do |dep|
-                version = config.lockfile.version(dep.name)
+                version = @lockfile.version(dep.name)
                 url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
 
                 dep.external_source = { :podspec => url }
@@ -72,6 +78,8 @@ module Pod
 
         apply_podfile_patch
 
+        #Hack to be able to override dependencies
+        config.podfile.lockfile = config.lockfile
         puts config.podfile.dependencies
 
         config.skip_repo_update = true
