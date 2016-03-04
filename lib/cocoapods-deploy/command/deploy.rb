@@ -42,6 +42,24 @@ module Pod
           def sources
             []
           end
+
+          def generate_podfile_state
+            nil
+          end
+
+          def store_existing_checkout_options
+          end
+
+          def verify_no_pods_with_different_sources!
+          end
+
+          def podfile_needs_install?(analysis_result)
+            false
+          end
+
+          def generate_version_locking_dependencies
+            Installer::Analyzer::LockingDependencyAnalyzer.unlocked_dependency_graph
+          end
         end
       end
 
