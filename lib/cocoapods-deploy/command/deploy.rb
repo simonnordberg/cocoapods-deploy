@@ -36,6 +36,23 @@ module Pod
         super
       end
 
+      #Hack to force locked dependencies to be installed
+      def apply_resolver_patch
+        Resolver.class_eval do
+          def resolve
+            dependencies = podfile.target_definition_list.flat_map do |target|
+              target.dependencies.each do |dep|
+                @platforms_by_dependency[dep].push(target.platform).uniq!
+              end
+            end
+            @activated = Molinillo::Resolver.new(self, self).resolve(locked_dependencies, locked_dependencies)
+            specs_by_target
+          rescue Molinillo::ResolverError => e
+            handle_resolver_error(e)
+          end
+        end
+      end
+
       #Hack to be able to override source installer
       def apply_installer_patch
         Installer::Analyzer.class_eval do
