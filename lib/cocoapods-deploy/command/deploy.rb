@@ -50,6 +50,9 @@ module Pod
           def store_existing_checkout_options
           end
 
+          def verify_no_pods_with_different_sources!
+          end
+
           def podfile_needs_install?(analysis_result)
             false
           end
