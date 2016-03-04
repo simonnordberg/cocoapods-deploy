@@ -6,7 +6,7 @@ The goal is to download and install the specific dependency versions from the `P
 
 ## Installation
 
-    $ gem install cocoapods-deployment
+    $ gem install cocoapods-deploy
 
 ## Usage
 
