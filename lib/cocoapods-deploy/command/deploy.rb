@@ -50,13 +50,13 @@ module Pod
 
         UI.section('Deploying Pods') do
 
-        config.podfile.dependencies.reject(&:external_source).each do |dep|
+        config.podfile.dependencies.reject(&:external_source).map do |dep|
           version = config.lockfile.version(dep.name)
           url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.name}/#{version}/#{dep.name}.podspec.json"
 
           UI.puts("`#{dep.name}` #{version} from #{url}")
 
-          dep.external_source = { :podspec => url }
+          Dependency.new(dep.name, { :podspec => url })
         end
 
         end
