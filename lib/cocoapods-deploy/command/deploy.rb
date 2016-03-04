@@ -29,10 +29,19 @@ module Pod
 
       def initialize(argv)
         super
+        apply_monkey_patch
       end
 
       def validate!
         super
+      end
+
+      def apply_monkey_patch
+        Installer::Analyzer.class_eval do
+          def sources
+            []
+          end
+        end
       end
 
       def run
