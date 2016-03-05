@@ -46,40 +46,7 @@ module Pod
           def lockfile=(lockfile)
             @lockfile = lockfile
           end
-
-          #Hack to download dependencies when not found
-          def apply_resolver_patch
-            Resolver.class_eval do
-
-              def search_for(dependency)
-
-                unless dependency.external_source
-                  version = lockfile.version(dep.name)
-                  url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dependency.root_name}/#{version}/#{dependency.root_name}.podspec.json"
-
-                  dependency.external_source = { :podspec => url }
-                  dependency.specific_version = nil
-                  dependency.requirement = Requirement.create({ :podspec => url })
-                end
-
-                @search ||= {}
-                @search[dependency] ||= begin
-                  requirement = Requirement.new(dependency.requirement.as_list << requirement_for_locked_pod_named(dependency.name))
-                  find_cached_set(dependency).
-                    all_specifications.
-                    select { |s| requirement.satisfied_by? s.version }.
-                    map { |s| s.subspec_by_name(dependency.name, false) }.
-                    compact.
-                    reverse
-                end
-                @search[dependency].dup
-              end
-            end
-          end
-
           def dependencies
-
-            apply_resolver_patch
 
             original_dependencies.reject(&:external_source).map do |dep|
 
@@ -123,6 +90,59 @@ module Pod
 
           def pods_to_fetch
             podfile.dependencies
+          end
+
+          #Hack to download dependencies when not found
+          def apply_resolver_patch
+            Resolver.class_eval do
+
+              def lockfile=(lockfile)
+                @lockfile = lockfile
+              end
+
+              def search_for(dependency)
+
+                unless dependency.external_source
+                  version = @lockfile.version(dep.name)
+                  url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dependency.root_name}/#{version}/#{dependency.root_name}.podspec.json"
+
+                  dependency.external_source = { :podspec => url }
+                  dependency.specific_version = nil
+                  dependency.requirement = Requirement.create({ :podspec => url })
+                end
+
+                @search ||= {}
+                @search[dependency] ||= begin
+                  requirement = Requirement.new(dependency.requirement.as_list << requirement_for_locked_pod_named(dependency.name))
+                  find_cached_set(dependency).
+                    all_specifications.
+                    select { |s| requirement.satisfied_by? s.version }.
+                    map { |s| s.subspec_by_name(dependency.name, false) }.
+                    compact.
+                    reverse
+                end
+                @search[dependency].dup
+              end
+            end
+          end
+
+          def resolve_dependencies
+            apply_resolver_patch
+            
+            duplicate_dependencies = podfile.dependencies.group_by(&:name).
+              select { |_name, dependencies| dependencies.count > 1 }
+            duplicate_dependencies.each do |name, dependencies|
+              UI.warn "There are duplicate dependencies on `#{name}` in #{UI.path podfile.defined_in_file}:\n\n" \
+               "- #{dependencies.map(&:to_s).join("\n- ")}"
+            end
+
+            specs_by_target = nil
+            UI.section "Resolving dependencies of #{UI.path(podfile.defined_in_file) || 'Podfile'}" do
+              resolver = Resolver.new(sandbox, podfile, locked_dependencies, sources)
+              specs_by_target = resolver.resolve
+              specs_by_target.values.flatten(1).each(&:validate_cocoapods_version)
+            end
+            specs_by_target
           end
 
           def generate_version_locking_dependencies
