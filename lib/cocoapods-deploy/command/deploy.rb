@@ -131,6 +131,7 @@ module Pod
           end
 
           def generate_version_locking_dependencies
+            apply_resolver_patch
              Installer::Analyzer::LockingDependencyAnalyzer.generate_version_locking_dependencies(lockfile, [])
           end
         end
@@ -177,7 +178,6 @@ module Pod
 
         apply_target_patch
         apply_podfile_patch
-        apply_resolver_patch
 
         #Hack to be able to override dependencies
         config.podfile.lockfile = config.lockfile
