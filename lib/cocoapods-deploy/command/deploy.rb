@@ -55,14 +55,8 @@ module Pod
                 name = dependency.root_name
                 unless cached_sets[name]
                   if dependency.external_source
+                    puts "boom"
                     spec = sandbox.specification(name)
-
-
-                    unless spec
-                      puts "Boom"
-                      source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
-                      spec = source.fetch(sandbox)
-                    end
 
                     unless spec
                       raise StandardError, '[Bug] Unable to find the specification ' \
