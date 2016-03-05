@@ -124,7 +124,6 @@ module Pod
                     end
                     cached_sets[name]
                   end
-                end
               end
 
               def search_for(dependency)
