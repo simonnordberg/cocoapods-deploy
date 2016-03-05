@@ -36,45 +36,6 @@ module Pod
         super
       end
 
-      #Hack to download dependencies
-      def apply_resolver_patch
-        Resolver.class_eval do
-
-          def find_cached_set(dependency)
-          #   name = dependency.root_name
-          #   unless cached_sets[name]
-          #     puts "woo"
-          #     if dependency.external_source
-          #
-          #       spec = sandbox.specification(name)
-          #
-          #       unless spec
-          #         puts "woo"
-          #         source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
-          #         source.can_cache = installation_options.clean?
-          #         spec = source.fetch(sandbox)
-          #       end
-          #
-          #       #download if not based on lock file otherwise fail
-          #       unless spec
-          #         raise StandardError, '[Bug] Unable to find the specification ' \
-          #           "for `#{dependency}`."
-          #       end
-          #       set = Specification::Set::External.new(spec)
-          #     else
-          #       set = create_set_from_sources(dependency)
-          #     end
-          #     cached_sets[name] = set
-          #     unless set
-          #       raise Molinillo::NoSuchDependencyError.new(dependency) # rubocop:disable Style/RaiseArgs
-          #     end
-          #   end
-          #   cached_sets[name]
-          puts "woo5"
-          end
-        end
-      end
-
       #Hack to force locked dependencies to be installed
       def apply_target_patch
         Podfile::TargetDefinition.class_eval do
@@ -86,14 +47,45 @@ module Pod
             @lockfile = lockfile
           end
 
-          def dependencies
-
+          #Hack to download dependencies when not found
+          def apply_resolver_patch
             Resolver.class_eval do
 
               def find_cached_set(dependency)
-                puts "WOO6"
+                name = dependency.root_name
+                unless cached_sets[name]
+                  if dependency.external_source
+                    spec = sandbox.specification(name)
+
+                    unless spec
+                      source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
+                      spec = source.fetch(sandbox)
+                    end
+
+                    unless spec
+                      raise StandardError, '[Bug] Unable to find the specification ' \
+                        "for `#{dependency}`."
+                    end
+                    set = Specification::Set::External.new(spec)
+                  else
+                    set = create_set_from_sources(dependency)
+                  end
+                  if set && dependency.head?
+                    set = Specification::Set::Head.new(set.specification)
+                  end
+                  cached_sets[name] = set
+                  unless set
+                    raise Molinillo::NoSuchDependencyError.new(dependency) # rubocop:disable Style/RaiseArgs
+                  end
+                end
+                cached_sets[name]
               end
             end
+          end
+
+          def dependencies
+
+            apply_resolver_patch
 
             original_dependencies.reject(&:external_source).map do |dep|
 
