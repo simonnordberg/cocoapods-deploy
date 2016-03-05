@@ -50,20 +50,24 @@ module Pod
           #Hack to download dependencies when not found
           def apply_resolver_patch
             Resolver.class_eval do
+
+              alias_method :original_search_for, :search_for
+
               def search_for(dependency)
-                puts dependency
-      @search ||= {}
-      @search[dependency] ||= begin
-        requirement = Requirement.new(dependency.requirement.as_list << requirement_for_locked_pod_named(dependency.name))
-        find_cached_set(dependency).
-          all_specifications.
-          select { |s| requirement.satisfied_by? s.version }.
-          map { |s| s.subspec_by_name(dependency.name, false) }.
-          compact.
-          reverse
-      end
-      @search[dependency].dup
-    end
+
+                unless dependency.external_source
+                  version = lockfile.version(dep.name)
+                  url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dep.root_name}/#{version}/#{dep.root_name}.podspec.json"
+
+                  dep.external_source = { :podspec => url }
+                  dep.specific_version = nil
+                  dep.requirement = Requirement.create({ :podspec => url })
+
+                  dep
+                end
+
+                original_search_for(dependency)
+              end
             end
           end
 
