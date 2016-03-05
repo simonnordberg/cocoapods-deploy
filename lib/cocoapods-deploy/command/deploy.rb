@@ -36,6 +36,42 @@ module Pod
         super
       end
 
+      #Hack to download dependencies
+      def apply_resolver_patch
+        Installer::Resolver.class_eval do
+
+          def find_cached_set(dependency)
+            name = dependency.root_name
+            unless cached_sets[name]
+              if dependency.external_source
+
+                spec = sandbox.specification(name)
+
+                unless spec
+                  source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
+                  source.can_cache = installation_options.clean?
+                  spec = source.fetch(sandbox)
+                end
+
+                #download if not based on lock file otherwise fail
+                unless spec
+                  raise StandardError, '[Bug] Unable to find the specification ' \
+                    "for `#{dependency}`."
+                end
+                set = Specification::Set::External.new(spec)
+              else
+                set = create_set_from_sources(dependency)
+              end
+              cached_sets[name] = set
+              unless set
+                raise Molinillo::NoSuchDependencyError.new(dependency) # rubocop:disable Style/RaiseArgs
+              end
+            end
+            cached_sets[name]
+          end
+        end
+      end
+
       #Hack to force locked dependencies to be installed
       def apply_target_patch
         Podfile::TargetDefinition.class_eval do
@@ -117,7 +153,6 @@ module Pod
                 dep.external_source = { :podspec => url }
                 dep.specific_version = nil
                 dep.requirement = Requirement.create({ :podspec => url })
-
               end
 
               dep
@@ -139,6 +174,7 @@ module Pod
 
         apply_target_patch
         apply_podfile_patch
+        apply_resolver_patch
 
         #Hack to be able to override dependencies
         config.podfile.lockfile = config.lockfile
