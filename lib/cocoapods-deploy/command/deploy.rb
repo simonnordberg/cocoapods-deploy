@@ -107,7 +107,6 @@ module Pod
                     spec = sandbox.specification(name)
 
                     unless spec
-                    puts "Boom"
                     source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
                     source.fetch(sandbox)
                     spec = sandbox.specification(name)
