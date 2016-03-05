@@ -51,27 +51,6 @@ module Pod
           def apply_resolver_patch
             Resolver.class_eval do
 
-              def find_cached_set(dependency)
-
-puts dependency
-
-                name = dependency.root_name
-                unless cached_sets[name]
-                  puts spec = sandbox.specification(name)
-
-                  unless spec
-                    raise StandardError, '[Bug] Unable to find the specification ' \
-                      "for `#{dependency}`."
-                  end
-                  puts set = Specification::Set::External.new(spec)
-
-                  cached_sets[name] = set
-                  unless set
-                    raise Molinillo::NoSuchDependencyError.new(dependency) # rubocop:disable Style/RaiseArgs
-                  end
-                end
-                cached_sets[name]
-              end
             end
           end
 
