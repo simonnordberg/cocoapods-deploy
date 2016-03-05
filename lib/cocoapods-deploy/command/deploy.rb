@@ -55,13 +55,13 @@ module Pod
                 name = dependency.root_name
                 unless cached_sets[name]
                   if dependency.external_source
-                    spec = sandbox.specification(name)
+                    puts spec = sandbox.specification(name)
 
                     unless spec
                       raise StandardError, '[Bug] Unable to find the specification ' \
                         "for `#{dependency}`."
                     end
-                    set = Specification::Set::External.new(spec)
+                    puts set = Specification::Set::External.new(spec)
                   else
                     set = create_set_from_sources(dependency)
                   end
