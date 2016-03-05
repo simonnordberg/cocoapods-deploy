@@ -55,7 +55,6 @@ module Pod
                 name = dependency.root_name
                 unless cached_sets[name]
                   if dependency.external_source
-                    puts "boom"
                     spec = sandbox.specification(name)
 
                     unless spec
@@ -64,7 +63,6 @@ module Pod
                     end
                     set = Specification::Set::External.new(spec)
                   else
-                    puts "Boom :()"
                     set = create_set_from_sources(dependency)
                   end
                   if set && dependency.head?
