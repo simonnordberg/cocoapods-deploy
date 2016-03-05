@@ -43,6 +43,7 @@ module Pod
           def find_cached_set(dependency)
             name = dependency.root_name
             unless cached_sets[name]
+              puts "woo"
               if dependency.external_source
 
                 spec = sandbox.specification(name)
