@@ -29,6 +29,12 @@ module Pod
             end
           end
         end
+
+        Installer::Analyzer.class_eval do
+          def sources
+            []
+          end
+        end
       end
 
       def download
@@ -112,7 +118,6 @@ module Pod
       end
 
       def run_install_with_update(update)
-
         #Force this to be true so it is always skipped
         config.skip_repo_update = true
 
