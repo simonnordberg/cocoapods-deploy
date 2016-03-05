@@ -38,7 +38,7 @@ module Pod
 
       #Hack to download dependencies
       def apply_resolver_patch
-        Installer::Resolver.class_eval do
+        Resolver.class_eval do
 
           def find_cached_set(dependency)
             name = dependency.root_name
