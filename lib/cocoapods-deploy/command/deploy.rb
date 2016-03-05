@@ -48,6 +48,7 @@ module Pod
                 spec = sandbox.specification(name)
 
                 unless spec
+                  puts "woo"
                   source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
                   source.can_cache = installation_options.clean?
                   spec = source.fetch(sandbox)
