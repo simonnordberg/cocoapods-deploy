@@ -80,12 +80,21 @@ module Pod
         Podfile::TargetDefinition.class_eval do
 
           alias_method :original_dependencies, :dependencies
+          alias_method :original_dependencies, :dependencies
 
           def lockfile=(lockfile)
             @lockfile = lockfile
           end
 
           def dependencies
+
+            Resolver.class_eval do
+
+              def find_cached_set(dependency)
+                puts "WOO6"
+              end
+            end
+
             original_dependencies.reject(&:external_source).map do |dep|
 
               version = @lockfile.version(dep.name)
@@ -131,7 +140,6 @@ module Pod
           end
 
           def generate_version_locking_dependencies
-            apply_resolver_patch
              Installer::Analyzer::LockingDependencyAnalyzer.generate_version_locking_dependencies(lockfile, [])
           end
         end
