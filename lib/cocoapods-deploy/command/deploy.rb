@@ -57,6 +57,7 @@ module Pod
                   if dependency.external_source
                     spec = sandbox.specification(name)
 
+
                     unless spec
                       puts "Boom"
                       source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
@@ -69,6 +70,7 @@ module Pod
                     end
                     set = Specification::Set::External.new(spec)
                   else
+                    puts "Boom :()"
                     set = create_set_from_sources(dependency)
                   end
                   if set && dependency.head?
