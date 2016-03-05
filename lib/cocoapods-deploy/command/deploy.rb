@@ -103,7 +103,7 @@ module Pod
               def search_for(dependency)
 
                 unless dependency.external_source
-                  version = @lockfile.version(dep.name)
+                  version = @lockfile.version(dependency.name)
                   url = "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{dependency.root_name}/#{version}/#{dependency.root_name}.podspec.json"
 
                   dependency.external_source = { :podspec => url }
@@ -128,7 +128,7 @@ module Pod
 
           def resolve_dependencies
             apply_resolver_patch
-            
+
             duplicate_dependencies = podfile.dependencies.group_by(&:name).
               select { |_name, dependencies| dependencies.count > 1 }
             duplicate_dependencies.each do |name, dependencies|
