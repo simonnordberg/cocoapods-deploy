@@ -50,7 +50,20 @@ module Pod
           #Hack to download dependencies when not found
           def apply_resolver_patch
             Resolver.class_eval do
-
+              def search_for(dependency)
+                puts dependency
+      @search ||= {}
+      @search[dependency] ||= begin
+        requirement = Requirement.new(dependency.requirement.as_list << requirement_for_locked_pod_named(dependency.name))
+        find_cached_set(dependency).
+          all_specifications.
+          select { |s| requirement.satisfied_by? s.version }.
+          map { |s| s.subspec_by_name(dependency.name, false) }.
+          compact.
+          reverse
+      end
+      @search[dependency].dup
+    end
             end
           end
 
