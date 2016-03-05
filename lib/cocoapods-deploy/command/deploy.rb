@@ -100,6 +100,33 @@ module Pod
                 @lockfile = lockfile
               end
 
+              def find_cached_set(dependency)
+
+                name = dependency.root_name
+                    unless cached_sets[name]
+                      spec = sandbox.specification(name)
+
+                      unless spec
+                        source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
+                        spec = source.fetch(sandbox)
+                      end
+
+                      unless spec
+                        raise StandardError, '[Bug] Unable to find the specification ' \
+                          "for `#{dependency}`."
+                      end
+                      set = Specification::Set::External.new(spec)
+
+                      cached_sets[name] = set
+                      unless set
+                        raise Molinillo::NoSuchDependencyError.new(dependency) # rubocop:disable Style/RaiseArgs
+                      end
+                    end
+                    cached_sets[name]
+                  end
+                end
+              end
+
               def search_for(dependency)
 
                 unless dependency.external_source
