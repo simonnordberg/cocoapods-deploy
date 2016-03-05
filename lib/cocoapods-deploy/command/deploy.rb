@@ -107,8 +107,9 @@ module Pod
                       spec = sandbox.specification(name)
 
                       unless spec
-                        source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
-                        spec = source.fetch(sandbox)
+                      puts "Boom"
+                      source = ExternalSources.from_dependency(dependency, podfile.defined_in_file)
+                      spec = source.fetch(sandbox)
                       end
 
                       unless spec
@@ -124,6 +125,7 @@ module Pod
                     end
                     cached_sets[name]
                   end
+                end
               end
 
               def search_for(dependency)
