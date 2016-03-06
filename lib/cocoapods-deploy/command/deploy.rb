@@ -1,5 +1,36 @@
+def podspec_url(pod, version)
+  "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
+end
+
 module Pod
   class Command
+
+    #Hack to help transform target dependencies
+    class DeployTransformer
+
+      def self.lockfile=(lockfile)
+        @@lockfile = lockfile
+      end
+
+      #Workaround resolver trying to pull down invalid pods
+      def self.in_lockfile(dep)
+        puts dep
+        @@lockfile.pod_names.include? dep.root_name
+      end
+
+      def self.transform_dependency_to_sandbox_podspec(dep)
+        unless dep.external_source
+          version = @@lockfile.version(dep)
+          checkout = { :podspec => podspec_url(dep.root_name, version) }
+          dep.external_source = checkout
+          dep.specific_version = nil
+          dep.requirement = Requirement.create(checkout)
+        end
+
+        dep
+      end
+    end
+
     class Deploy < Command
 
       include Project
@@ -10,13 +41,61 @@ module Pod
         Install project dependencies to Podfile.lock versions without pulling down full podspec repo.
       DESC
 
-      def initialize(argv)
-        super
-        apply_installer_patch
-      end
+      #Hack to transform podfile dependencies to podspec ones - we should find
+      #a way of removing some of these
+      def apply_dependency_patches
 
-      def validate!
-        super
+        Specification.class_eval do
+
+          alias_method :original_all_dependencies, :all_dependencies
+
+          def all_dependencies(platform = nil)
+            deps = original_all_dependencies(platform = nil).select do |dep|
+              DeployTransformer.in_lockfile(dep)
+            end
+
+            deps.map do |dep|
+
+              unless dep.external_source
+                DeployTransformer.transform_dependency_to_sandbox_podspec(dep)
+              else
+                dep
+              end
+            end
+          end
+        end
+
+        Resolver.class_eval do
+
+          alias_method :original_locked_dependencies, :locked_dependencies
+
+          def dependencies
+            original_locked_dependencies.map do |dep|
+
+              unless dep.external_source
+                DeployTransformer.transform_dependency_to_sandbox_podspec(dep)
+              else
+                dep
+              end
+            end
+          end
+        end
+
+        Podfile::TargetDefinition.class_eval do
+
+          alias_method :original_dependencies, :dependencies
+
+          def dependencies
+            original_dependencies.map do |dep|
+
+              unless dep.external_source
+                DeployTransformer.transform_dependency_to_sandbox_podspec(dep)
+              else
+                dep
+              end
+            end
+          end
+        end
       end
 
       #Hack to be able to override source installer
@@ -25,7 +104,6 @@ module Pod
           def create_analyzer
             Installer::Analyzer.new(sandbox, podfile, lockfile).tap do |analyzer|
               analyzer.allow_pre_downloads = false
-              #analyzer.installation_options = installation_options
             end
           end
         end
@@ -35,13 +113,6 @@ module Pod
             []
           end
         end
-      end
-
-      def download
-      end
-
-      def podspec_url(pod, version)
-        "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
       end
 
       def transform_dependency_and_version_to_remote_podspec(dep, version)
@@ -77,24 +148,6 @@ module Pod
         download_dependency(dep)
       end
 
-      def transform_dependency_and_version_to_sandbox_podspec(dep, version)
-        unless dep.external_source
-          checkout = { :podspec => podspec_url(dep.root_name, version) }
-          dep.external_source = checkout
-          dep.specific_version = nil
-          dep.requirement = Requirement.create(checkout)
-        end
-
-        dep
-      end
-
-      def transform_target_dependencies(target)
-        target.dependencies.each do |dep|
-          version = config.lockfile.version(dep.name)
-          transform_dependency_and_version_to_sandbox_podspec(dep, version)
-        end
-      end
-
       def run
         verify_podfile_exists!
         verify_lockfile_exists!
@@ -107,10 +160,6 @@ module Pod
           transform_pod_and_version(pod, version)
         end
 
-        config.podfile.target_definition_list.map do |target|
-          transform_target_dependencies(target)
-        end
-
         # Disable any kind of fetching and run the installer in a way that it
         # doesn't modify the lockfile and is able to use the sandbox to get the
         # just fetched specs
@@ -121,9 +170,17 @@ module Pod
         #Force this to be true so it is always skipped
         config.skip_repo_update = true
 
+        ### The more of the below we can do cleanly the better
+
         #Patch installer to provide our own analyzer we need to turn of fetching
         #until we can figure out how to do it manually
         apply_installer_patch
+        apply_dependency_patches
+
+        #Hack to provide the lockfile to the target dependencies
+        DeployTransformer.lockfile = config.lockfile
+
+        ### The more of the abov we can do cleanly the better
 
         installer = Installer.new(config.sandbox, config.podfile, nil)
         installer.update = update
