@@ -159,7 +159,7 @@ module Pod
         apply_dependency_patches
         DeployTransformer.lockfile = config.lockfile
 
-        installer = DeployInstaller.new(config.sandbox, config.podfile, nil)
+        installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
         installer.update = update
         installer.install!
       end
