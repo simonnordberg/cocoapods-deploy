@@ -155,7 +155,9 @@ module Pod
         apply_dependency_patches
         DeployTransformer.lockfile = config.lockfile
 
-        installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
+        readonly_lockfile = DeployLockfile.new(config.lockfile.internal_data)
+
+        installer = DeployInstaller.new(config.sandbox, config.podfile, readonly_lockfile)
         installer.update = update
         installer.install!
       end
