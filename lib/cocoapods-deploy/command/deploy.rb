@@ -121,7 +121,6 @@ module Pod
       end
 
       def download_dependency(dep)
-        #Handle things we already have
         source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
         source.fetch(config.sandbox)
       end
@@ -144,9 +143,6 @@ module Pod
           transform_pod_and_version(pod, version)
         end
 
-        # Disable any kind of fetching and run the installer in a way that it
-        # doesn't modify the lockfile and is able to use the sandbox to get the
-        # just fetched specs
         run_install_with_update(false)
       end
 
