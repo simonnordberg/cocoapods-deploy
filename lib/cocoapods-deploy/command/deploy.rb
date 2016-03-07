@@ -46,6 +46,8 @@ module Pod
       #a way of removing some of these
       def apply_dependency_patches
 
+        DeployTransformer.lockfile = config.lockfile
+
         Specification.class_eval do
 
           alias_method :original_all_dependencies, :all_dependencies
