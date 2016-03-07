@@ -150,8 +150,7 @@ module Pod
         #Force this to be true so it is always skipped
         config.skip_repo_update = true
 
-        # TODO: Figure out how to transform these dependencies and how to prevent
-        # modification to the actual lockfile.
+        # TODO: Figure out how to transform these dependencies
         apply_dependency_patches
         DeployTransformer.lockfile = config.lockfile
 
