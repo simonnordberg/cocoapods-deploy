@@ -12,12 +12,13 @@ module Pod
         @@lockfile = lockfile
       end
 
-      #Workaround resolver trying to pull down invalid pods
+      #TODO: Remove Workaround resolver trying to pull down invalid pods
       def self.in_lockfile(dep)
         puts dep
         @@lockfile.pod_names.include? dep.root_name
       end
 
+      #TODO: Remove lockfile modifications
       def self.transform_dependency_to_sandbox_podspec(dep)
         unless dep.external_source
           version = @@lockfile.version(dep)
@@ -41,7 +42,7 @@ module Pod
         Install project dependencies to Podfile.lock versions without pulling down full podspec repo.
       DESC
 
-      #Hack to transform podfile dependencies to podspec ones - we should find
+      #TODO: Remove Hack to transform podfile dependencies to podspec ones - we should find
       #a way of removing some of these
       def apply_dependency_patches
 
@@ -94,23 +95,6 @@ module Pod
                 dep
               end
             end
-          end
-        end
-      end
-
-      #Hack to be able to override source installer
-      def apply_installer_patch
-        Installer.class_eval do
-          def create_analyzer
-            Installer::Analyzer.new(sandbox, podfile, lockfile).tap do |analyzer|
-              analyzer.allow_pre_downloads = false
-            end
-          end
-        end
-
-        Installer::Analyzer.class_eval do
-          def sources
-            []
           end
         end
       end
@@ -170,19 +154,12 @@ module Pod
         #Force this to be true so it is always skipped
         config.skip_repo_update = true
 
-        ### The more of the below we can do cleanly the better
-
-        #Patch installer to provide our own analyzer we need to turn of fetching
-        #until we can figure out how to do it manually
-        apply_installer_patch
+        # TODO: Figure out how to transform these dependencies and how to prevent
+        # modification to the actual lockfile.
         apply_dependency_patches
-
-        #Hack to provide the lockfile to the target dependencies
         DeployTransformer.lockfile = config.lockfile
 
-        ### The more of the abov we can do cleanly the better
-
-        installer = Installer.new(config.sandbox, config.podfile, nil)
+        installer = DeployInstaller.new(config.sandbox, config.podfile, nil)
         installer.update = update
         installer.install!
       end
