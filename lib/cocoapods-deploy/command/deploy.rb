@@ -155,8 +155,9 @@ module Pod
         DeployTransformer.lockfile = config.lockfile
 
         readonly_lockfile = DeployLockfile.new(config.lockfile.internal_data)
+        deployable_podfile = config.podfile
 
-        installer = DeployInstaller.new(config.sandbox, config.podfile, readonly_lockfile)
+        installer = DeployInstaller.new(config.sandbox, deployable_podfile, readonly_lockfile)
         installer.update = update
         installer.install!
       end
