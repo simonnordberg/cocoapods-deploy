@@ -1,5 +1,5 @@
 module Pod
-  class DeployAnalyzer < Installer
+  class DeployAnalyzer < Installer::Analyzer
     def sources
       []
     end

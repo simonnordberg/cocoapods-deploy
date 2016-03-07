@@ -5,5 +5,8 @@ module Pod
         analyzer.allow_pre_downloads = false
       end
     end
+
+    def write_lockfiles
+    end
   end
 end

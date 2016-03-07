@@ -150,14 +150,10 @@ module Pod
         #Force this to be true so it is always skipped
         config.skip_repo_update = true
 
-        # TODO: Figure out how to transform these dependencies
+        #TODO: Work out way of transforming dependencies without patch
         apply_dependency_patches
-        DeployTransformer.lockfile = config.lockfile
 
-        readonly_lockfile = DeployLockfile.new(config.lockfile.internal_data)
-        deployable_podfile = config.podfile
-
-        installer = DeployInstaller.new(config.sandbox, deployable_podfile, readonly_lockfile)
+        installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
         installer.update = update
         installer.install!
       end
