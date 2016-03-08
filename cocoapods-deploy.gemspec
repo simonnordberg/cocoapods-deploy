@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.date = "2016-03-07"
   s.description = "Implement's bundler's --deployment functionality in CocoaPods."
   s.email = ["james@supmenow.com"]
-  s.files = [".gitignore", "Gemfile", "LICENSE.txt", "README.md", "Rakefile", "cocoapods-deploy.gemspec", "lib/cocoapods-deploy/command.rb", "lib/cocoapods-deploy/command/deploy.rb", "lib/cocoapods-deploy/dependency.rb", "lib/cocoapods-deploy/deploy_analyzer.rb", "lib/cocoapods-deploy/deploy_installer.rb", "lib/cocoapods-deploy/gem_version.rb", "lib/cocoapods-deploy.rb", "lib/cocoapods_plugin.rb", "spec/spec_helper.rb"]
+  s.files = [".gitignore", "Gemfile", "LICENSE.txt", "README.md", "Rakefile", "cocoapods-deploy.gemspec", "lib/cocoapods-deploy/command.rb", "lib/cocoapods-deploy/command/deploy.rb", "lib/cocoapods-deploy/dependency.rb", "lib/cocoapods-deploy/deploy_analyzer.rb", "lib/cocoapods-deploy/deploy_installer.rb", "lib/cocoapods-deploy/gem_version.rb", "lib/cocoapods_deploy.rb", "lib/cocoapods_plugin.rb", "spec/spec_helper.rb"]
   s.homepage = "https://github.com/jcampbell05/cocoapods-deploy"
   s.licenses = ["MIT"]
   s.rubygems_version = "2.4.8"
