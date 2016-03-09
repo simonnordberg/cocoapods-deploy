@@ -23,11 +23,25 @@ module Pod
           version = @@lockfile.version(dep)
           checkout = { :podspec => podspec_url(dep.root_name, version) }
           dep.external_source = checkout
-          dep.specific_version = nil
           dep.requirement = Requirement.create(checkout)
         end
 
         dep
+      end
+
+      #TODO: Provide cleaner way of doing this in the future
+      def self.inject_subspec_dependencies
+       @@lockfile.to_hash["PODS"].select { |dep|
+         dep.is_a?(Hash)
+       }.map { |dep|
+         dep.values.first.map { |pod|
+           pod = pod.split(" ").first
+           parent = dep.keys.first.split(" ").first
+           version = @@lockfile.version(parent)
+           depen = Dependency.new(pod, version) #Get pod version
+           transform_dependency_to_sandbox_podspec(depen)
+         }
+       }.flatten
       end
     end
 
@@ -52,17 +66,17 @@ module Pod
           alias_method :original_all_dependencies, :all_dependencies
 
           def all_dependencies(platform = nil)
-            deps = original_all_dependencies(platform = nil).select do |dep|
-              DeployTransformer.in_lockfile(dep)
-            end
-
-            deps.map do |dep|
+            new_deps = original_all_dependencies.map do |dep|
 
               unless dep.external_source
                 DeployTransformer.transform_dependency_to_sandbox_podspec(dep)
               else
                 dep
               end
+            end + DeployTransformer.inject_subspec_dependencies
+
+            new_deps.select do |dep|
+              DeployTransformer.in_lockfile(dep)
             end
           end
         end
@@ -72,13 +86,16 @@ module Pod
           alias_method :original_locked_dependencies, :locked_dependencies
 
           def dependencies
-            original_locked_dependencies.map do |dep|
-
+            new_deps = original_locked_dependencies.map do |dep|
               unless dep.external_source
                 DeployTransformer.transform_dependency_to_sandbox_podspec(dep)
               else
                 dep
               end
+            end + DeployTransformer.inject_subspec_dependencies
+
+            new_deps.select do |dep|
+              DeployTransformer.in_lockfile(dep)
             end
           end
         end
@@ -88,13 +105,16 @@ module Pod
           alias_method :original_dependencies, :dependencies
 
           def dependencies
-            original_dependencies.map do |dep|
-
+            new_deps = original_dependencies.map do |dep|
               unless dep.external_source
                 DeployTransformer.transform_dependency_to_sandbox_podspec(dep)
               else
                 dep
               end
+            end + DeployTransformer.inject_subspec_dependencies
+
+            new_deps.select do |dep|
+              DeployTransformer.in_lockfile(dep)
             end
           end
         end
@@ -137,11 +157,11 @@ module Pod
         verify_lockfile_exists!
 
         UI.puts("- Deploying Pods")
-
+        #
         config.lockfile.pod_names.each do |pod|
-          version = config.lockfile.version(pod)
-          UI.puts("- Deploying #{pod} #{version}")
-          transform_pod_and_version(pod, version)
+        #   version = config.lockfile.version(pod)
+        #   UI.puts("- Deploying #{pod} #{version}")
+        #   transform_pod_and_version(pod, version)
         end
 
         run_install_with_update(false)
@@ -152,6 +172,7 @@ module Pod
         config.skip_repo_update = true #Force this to be true so it is always skipped
         config.clean = false #Disable source files from being cleaned
 
+        #TODO: Somehow use a custom dependencies_to_lock_pod_named in the lockfile
         #TODO: Work out way of transforming dependencies without patch
         apply_dependency_patches
 
