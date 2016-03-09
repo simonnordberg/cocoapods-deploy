@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: cocoapods-deploy 0.0.2 ruby lib
+# stub: cocoapods-deploy 0.0.4 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "cocoapods-deploy"
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]

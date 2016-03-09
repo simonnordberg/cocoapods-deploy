@@ -148,10 +148,10 @@ module Pod
       end
 
       def run_install_with_update(update)
-        ENV['COCOAPODS_DISABLE_STATS'] = true #Disable Cocoapods Stats
+        ENV['COCOAPODS_DISABLE_STATS'] = "true" #Disable Cocoapods Stats
         config.skip_repo_update = true #Force this to be true so it is always skipped
         config.clean = false #Disable source files from being cleaned
-        
+
         #TODO: Work out way of transforming dependencies without patch
         apply_dependency_patches
 
