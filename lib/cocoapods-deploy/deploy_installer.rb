@@ -7,6 +7,11 @@ module Pod
     end
 
     def write_lockfiles
+      UI.message "- Writing Manifest in #{UI.path sandbox.manifest_path}" do
+        sandbox.manifest_path.open('w') do |f|
+          f.write config.lockfile_path.read
+        end
+      end
     end
   end
 end
