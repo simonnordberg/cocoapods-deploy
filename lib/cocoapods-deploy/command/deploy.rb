@@ -152,7 +152,29 @@ module Pod
         download_dependency(dep)
       end
 
+      # This method sets up the enviroment to be optimised
+      # for CocoaPod Deployment.
+      #
+      # Turning off things like repo cloning, clean-up and statistics.
+      def setup_enviroment
+        # Disable Cocoapods Stats - Due to
+        # https://github.com/CocoaPods/cocoapods-stats/issues/28
+        ENV['COCOAPODS_DISABLE_STATS'] = "1"
+
+        # Disable updating of the CocoaPods Repo since we are directly
+        # deploying using Podspecs
+        config.skip_repo_update = true
+
+        # Disable cleaning of the source file since we are deploying
+        # and we don't need to keep things clean.
+        config.clean = false
+      end
+
       def run
+
+        setup_enviroment
+        return
+
         verify_podfile_exists!
         verify_lockfile_exists!
 
@@ -168,9 +190,6 @@ module Pod
       end
 
       def run_install_with_update(update)
-        ENV['COCOAPODS_DISABLE_STATS'] = "1" #Disable Cocoapods Stats
-        config.skip_repo_update = true #Force this to be true so it is always skipped
-        config.clean = false #Disable source files from being cleaned
 
         #TODO: Somehow use a custom dependencies_to_lock_pod_named in the lockfile
         #TODO: Work out way of transforming dependencies without patch
