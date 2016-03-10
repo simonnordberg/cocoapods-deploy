@@ -134,6 +134,8 @@ module Pod
       describe 'andthen transforming the specifications' do
 
         before do
+          @transformer = DeployTransformer.new(nil)
+
           ExternalSources.stubs(:from_dependency).returns(@source)
           @source.stubs(:fetch)
         end
@@ -143,25 +145,22 @@ module Pod
           @command.run
         end
 
-        # it 'should create transformer with lockfile' do
+        it 'should create transformer with lockfile' do
+          DeployTransformer.expects(:new).with(Config.instance.lockfile).returns(@transformer)
+          @command.run
+        end
 
-        # transformer = DeployTransformer.new(config.lockfile)
-        # transformer.transform_specification_for_sandbox(spec, sandbox)
-        #
-        #   # spec = sandbox.specification(dep.root_name)
-        #   # transformer = DeployTransformer.new(config.lockfile)
-        #   # transformer.transform_specification_for_sandbox(spec, sandbox)
-        # end
-        #
-        # it 'should transform specification' do
+        it 'should transform the specification' do
+          specification = Specification.new
+          sandbox = Sandbox.new(".")
+          sandbox.expects(:specification).with("Google").returns(specification)
 
-        # transformer = DeployTransformer.new(config.lockfile)
-        # transformer.transform_specification_for_sandbox(spec, sandbox)
-        #
-        #   # spec = sandbox.specification(dep.root_name)
-        #   # transformer = DeployTransformer.new(config.lockfile)
-        #   # transformer.transform_specification_for_sandbox(spec, sandbox)
-        # end
+          Config.instance.expects(:sandbox).returns(sandbox)
+          DeployTransformer.stubs(:new).returns(@transformer)
+
+          @transformer.expects(:transform_specification_for_sandbox).with(specification, sandbox)
+          @command.run
+        end
       end
     end
   end
