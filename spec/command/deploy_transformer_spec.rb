@@ -69,13 +69,13 @@ module Pod
     describe "when transforming specification" do
       # it "should preserve external dependencies" do
       #   lockfile = Lockfile.new({})
-      #   original_podfile = Podfile.new do |p|
-      #     p.pod "Polly", :git => "http://example.org"
+      #   original_spec = Specification.new do |p|
+      #     p.dependency "Polly", :git => "http://example.org"
       #   end
       #
-      #   podfile = transform_podfile(lockfile, original_podfile)
+      #   spec = transform_specification(lockfile, original_spec)
       #   dependency = Dependency.new("Polly", {:git => "http://example.org"})
-      #   podfile.dependencies.should.include dependency
+      #   spec.dependencies.should.include dependency
       # end
       #
       # describe "when transforming repo dependencies" do

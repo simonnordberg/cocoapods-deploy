@@ -28,6 +28,7 @@ module Pod
       before do
         @command.stubs(:transform_podfile)
         @command.stubs(:install_sources_for_podfile)
+        @command.stubs(:transform_specification_dependencies_for_podfile)
         @command.stubs(:install)
       end
 
@@ -61,6 +62,7 @@ module Pod
 
       before do
         @command.stubs(:install_sources_for_podfile)
+        @command.stubs(:transform_specification_dependencies_for_podfile)
         @command.stubs(:install)
 
         @transformer = DeployTransformer.new(nil)
@@ -131,7 +133,7 @@ module Pod
         @command.run
       end
 
-      describe 'andthen transforming the specifications' do
+      describe 'and then transforming the specifications' do
 
         before do
           @transformer = DeployTransformer.new(nil)

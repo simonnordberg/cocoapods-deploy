@@ -47,12 +47,15 @@ module Pod
       # Installed required sources.
       def install_sources_for_podfile(podfile)
         podfile.dependencies.map do |dep|
-          sandbox = config.sandbox
-
           source = ExternalSources.from_dependency(dep, podfile.defined_in_file)
-          source.fetch(sandbox)
+          source.fetch(config.sandbox)
+        end
+      end
 
-          spec = sandbox.specification(dep.root_name)
+      # Processes the root specifications for a podfile
+      def transform_specification_dependencies_for_podfile(podfile)
+        podfile.dependencies.map do |dep|
+          spec = config.sandbox.specification(dep.root_name)
           transformer = DeployTransformer.new(config.lockfile)
           transformer.transform_specification(spec)
         end
@@ -70,6 +73,7 @@ module Pod
 
         podfile = transform_podfile
         install_sources_for_podfile(podfile)
+        transform_specification_dependencies_for_podfile(podfile)
 
         install(podfile)
       end
