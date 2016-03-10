@@ -18,7 +18,7 @@ module Pod
     describe 'setting up enviroment' do
 
       before do
-        @command.stubs(:prepare_for_deployment)
+        @command.stubs(:transform_podfile)
       end
 
       it 'should disable cocoapods-stats' do
