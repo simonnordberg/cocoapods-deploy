@@ -15,6 +15,12 @@ module Pod
       @command = Command.parse(%w{ deploy })
       @command.stubs(:verify_lockfile_exists!)
       @command.stubs(:verify_podfile_exists!)
+
+      @podfile = Podfile.new
+      Config.instance.stubs(:podfile).returns(@podfile)
+
+      @lockfile = Lockfile.new({})
+      Config.instance.stubs(:lockfile).returns(@lockfile)
     end
 
     describe 'CLAide' do
@@ -27,7 +33,7 @@ module Pod
 
       before do
         @command.stubs(:transform_podfile)
-        @command.stubs(:install_sources_for_podfile)
+        @command.stubs(:install_sources_for_lockfile)
         @command.stubs(:install)
       end
 
@@ -60,16 +66,10 @@ module Pod
     describe 'converting podfile dependencies' do
 
       before do
-        @command.stubs(:install_sources_for_podfile)
+        @command.stubs(:install_sources_for_lockfile)
         @command.stubs(:install)
 
         @transformer = DeployTransformer.new(nil)
-
-        @podfile = Podfile.new
-        Config.instance.stubs(:podfile).returns(@podfile)
-
-        @lockfile = Lockfile.new({})
-        Config.instance.stubs(:lockfile).returns(@lockfile)
       end
 
       it 'should create transformer with lockfile' do
@@ -88,7 +88,6 @@ module Pod
     describe 'when installing' do
 
       before do
-        @podfile = Podfile.new
         @command.stubs(:transform_podfile).returns(@podfile)
 
         @installer = DeployInstaller.new(@sandbox, @podfile, nil)
@@ -111,8 +110,7 @@ module Pod
 
       before do
         @dependency = Dependency.new("Google/Analytics")
-        @podfile = Podfile.new("path")
-        @podfile.stubs(:dependencies).returns([@dependency])
+        @lockfile.stubs(:pod_names).returns(["Google/Analytics"])
 
         @source = MockExternalSource.new
         @command.stubs(:transform_podfile).returns(@podfile)

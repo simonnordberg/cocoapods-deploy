@@ -45,13 +45,14 @@ module Pod
       end
 
       # Installed required sources.
-      def install_sources_for_podfile(podfile)
-        podfile.dependencies.each do |dep|
-          source = ExternalSources.from_dependency(dep, podfile.defined_in_file)
+      def install_sources_for_lockfile
+        config.lockfile.pod_names.each do |dep|
+          puts dep
+          source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
           source.fetch(config.sandbox)
         end
       end
-      
+
       # Triggers the CocoaPods install process
       def install(podfile)
         installer = DeployInstaller.new(config.sandbox, podfile, nil)
@@ -62,11 +63,9 @@ module Pod
         setup_environment
         verify_environment
 
-        podfile = transform_podfile
-        install_sources_for_podfile(podfile)
-        podfile = transform_podfile
-
-        install(podfile)
+        #Install the sources from the lockfile
+        install_sources_for_lockfile
+        install(transform_podfile)
       end
     end
   end
