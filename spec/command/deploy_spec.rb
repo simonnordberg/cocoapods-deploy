@@ -158,7 +158,7 @@ module Pod
           Config.instance.sandbox.stubs(:specification).returns(specification)
           DeployTransformer.stubs(:new).returns(@transformer)
 
-          @transformer.expects(:transform_specification).with(specification)
+          @transformer.expects(:transform_specifications_for_podfile).with([specification], @podfile)
           @command.run
         end
       end

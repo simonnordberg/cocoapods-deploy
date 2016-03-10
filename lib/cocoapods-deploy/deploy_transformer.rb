@@ -14,11 +14,13 @@ module Pod
       Podfile.from_hash(new_hash, podfile.defined_in_file)
     end
 
-    def transform_specification(spec)
+    def transform_specifications_for_podfile(specs, podfile)
+      internal_hash = podfile.to_hash
       # - Check dependencies for Podspecs if they are a subspec and include them
       #   and version lock them to their parent spec.
       #
       # - Otherwise we need download them.
+      Podfile.from_hash({}, podfile.defined_in_file)
     end
 
     private
