@@ -1,28 +1,35 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
+def transform(lockfile, podfile)
+  transformer = Pod::DeployTransformer.new(lockfile)
+  transformer.transform_podfile(podfile)
+end
+
 module Pod
   describe DeployTransformer do
 
-    before do
+    it "should preserve external dependencies" do
       lockfile = Lockfile.new({})
       original_podfile = Podfile.new do |p|
-        p.pod "Quick"
-
-        p.target "yo" do
-          pod "ARAnalytics", :subspecs => ["Mixpanel"]
-          pod "Mixpanel", "1.2.0"
-          pod "Polly", :git => "http://example.org"
-          pod "Google/Analytics", "3.0"
-        end
+        p.pod "Polly", :git => "http://example.org"
       end
 
-      transformer = DeployTransformer.new(lockfile)
-      @podfile = transformer.transform_podfile(original_podfile)
+      podfile = transform(lockfile, original_podfile)
+      dependency = Dependency.new("Polly", {:git => "http://example.org"})
+      podfile.dependencies.should.include dependency
     end
 
-    it "should preserve external dependencies" do
-      dependency = Dependency.new("Polly", {:git => "http://example.org"})
-      @podfile.dependencies.should.include dependency
+    describe "when transforming repo dependencies" do
+      it "should abort when one isn't in the lockfile" do
+        lockfile = Lockfile.new({})
+        original_podfile = Podfile.new do |p|
+          p.pod "Mixpanel"
+        end
+
+        should.raise(RuntimeError) {
+          transform(lockfile, original_podfile)
+        }
+      end
     end
   end
 end

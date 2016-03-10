@@ -10,7 +10,7 @@ module Pod
     def transform_podfile(podfile)
       internal_hash = podfile.to_hash
       transform_internal_hash(internal_hash)
-      
+
       Podfile.from_hash(internal_hash, podfile.defined_in_file)
     end
 
@@ -44,16 +44,25 @@ module Pod
       end
     end
 
+    def podspec_url(pod, version)
+      "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
+    end
+
     def transform_dependency(name_or_hash)
       dependency = parse_dependency(name_or_hash)
 
       unless dependency.external_source
+
+        pod = dependency.name
+        version = @lockfile.version(pod)
+        raise "Missing dependency in Lockfile please run `pod install` or `pod update`." unless version
+
+        { pod => podspec_url(pod, version) }
         # - If Repo transform to podspec url for version cross-referenced against
         # lockfile
         # - Check dependencies for podspecs if they are a subspec and include those
         # and version lock to their parent spec.
         # - If repo based pod or subspec not found in lockfile then abort.
-        name_or_hash
       else
         # - If external leave it be
         name_or_hash
@@ -62,9 +71,7 @@ module Pod
   end
 end
 
-# def podspec_url(pod, version)
-#   "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
-# end
+
 #
 # #Hack to help transform target dependencies
 # class DeployTransformer
