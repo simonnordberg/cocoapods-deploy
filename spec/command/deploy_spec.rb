@@ -19,7 +19,12 @@ module Pod
       @podfile = Podfile.new
       Config.instance.stubs(:podfile).returns(@podfile)
 
-      @lockfile = Lockfile.new({})
+      @lockfile = Lockfile.new({
+        "PODS" => [
+          "Google/Analytics (1.0)",
+          "Mixpanel (1.0)"
+        ]
+      })
       Config.instance.stubs(:lockfile).returns(@lockfile)
     end
 
@@ -88,6 +93,7 @@ module Pod
     describe 'when installing' do
 
       before do
+        @command.stubs(:install_sources_for_lockfile)
         @command.stubs(:transform_podfile).returns(@podfile)
 
         @installer = DeployInstaller.new(@sandbox, @podfile, nil)
