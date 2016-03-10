@@ -68,5 +68,12 @@ module Pod
         name_or_hash
       end
     end
+
+    def transform_specification_for_sandbox(spec, sandbox)
+      # - Check dependencies for Podspecs if they are a subspec and include them
+      #   and version lock them to their parent spec.
+      #
+      # - Otherwise we need download them.
+    end
   end
 end

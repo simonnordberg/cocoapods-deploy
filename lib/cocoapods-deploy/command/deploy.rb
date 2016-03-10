@@ -47,20 +47,15 @@ module Pod
       # Installed required sources.
       def install_sources_for_podfile(podfile)
         podfile.dependencies.map do |dep|
+          sandbox = config.sandbox
+
           source = ExternalSources.from_dependency(dep, podfile.defined_in_file)
-          source.fetch(config.sandbox)
+          source.fetch(sandbox)
 
-          specification = config.sandbox.specification(dep.name)
-          process_external_dependencies(specification)
+          spec = sandbox.specification(dep.name)
+          transformer = DeployTransformer.new(config.lockfile)
+          transformer.transform_specification_for_sandbox(spec, sandbox)
         end
-      end
-
-      # This processes external dependencies for a specification
-      def process_external_dependencies(specification)
-        # - Check dependencies for Podspecs if they are a subspec and include them
-        #   and version lock them to their parent spec.
-        #
-        # - Otherwise we need download them.
       end
 
       # Triggers the CocoaPods install process
