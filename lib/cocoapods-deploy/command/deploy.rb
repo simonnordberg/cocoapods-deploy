@@ -47,20 +47,21 @@ module Pod
       # by transforming Repo depedencies to Poddpec based dependencies
       # and making sure we have eveything we need for Subspecs which
       # typially don't work with Podspec based depedencies.
-      def prepare_for_deployment
+      def transform_podfile
         create_transformer_for_lockfile unless @transformer
-        @transformer.transform_podfile(config.podfile)
+        p = @transformer.transform_podfile(config.podfile)
+        puts p.dependencies
       end
 
       def run
         setup_environment
         verify_environment
 
-        prepare_for_deployment
-        # Install subspec dependencies based on lockfile
+        #TODO: BDD Below
+        podfile = transform_podfile
 
         #TODO: Spec
-        installer = DeployInstaller.new(config.sandbox, config.podfile, nil)
+        installer = DeployInstaller.new(config.sandbox, podfile, nil)
         installer.install!
       end
     end
