@@ -61,17 +61,27 @@ module Pod
       end
     end
 
-    # describe "when transforming podspec dependencies" do
-    #     it "should abort when absent from lockfile" do
-    #       lockfile = Lockfile.new({})
-    #       original_podfile = Podfile.new do |p|
-    #         p.pod "Mixpanel"
-    #       end
-    #
-    #       should.raise(Informative) {
-    #         transform_podfile(lockfile, nil, original_podfile)
-    #       }
-    #     end
+    describe "when transforming podspec dependencies" do
+        it "should abort when absent from lockfile" do
+          spec = Specification.new do |s|
+            s.dependency "Google"
+          end
+          sandbox = Sandbox.new(".")
+          sandbox.stubs(:specification).returns(spec)
+
+          lockfile = Lockfile.new({
+            "PODS" => ["GoogleAnalytics (1.0)"]
+          })
+          original_podfile = Podfile.new do |p|
+            p.pod "GoogleAnalytics"
+          end
+
+          transform_podfile(lockfile, sandbox, original_podfile)
+          spec.should.not.equal nil
+          # should.raise(Informative) {
+          #   transform_podfile(lockfile, sandbox, original_podfile)
+          # }
+      end
     #
     #     it "should transform to Podspec URL" do
     #       lockfile = Lockfile.new({
@@ -101,6 +111,6 @@ module Pod
     #       end
     #     end
     #   end
-    # end
+    end
   end
 end

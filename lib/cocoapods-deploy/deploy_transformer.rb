@@ -23,9 +23,6 @@ module Pod
 
     private
 
-    def generate_dependency_hash_for_spec(spec)
-    end
-
     def transform_internal_hash(hash)
       targets = hash["target_definitions"]
       targets.map do |target|
@@ -41,10 +38,11 @@ module Pod
         transform_dependency(dep)
       end if dependencies
 
+      dependencies = hash["dependencies"]
       dependencies.each do |dep|
         podspec_dependencies = collect_podspec_dependencies(dep)
         hash["dependencies"] << podspec_dependencies if podspec_dependencies
-      end if dependencies
+      end if dependencies && @sandbox
 
       children = hash["children"]
       hash["children"] = children.map do |target|
@@ -69,6 +67,10 @@ module Pod
     end
 
     def collect_podspec_dependencies(name_or_hash)
+      dependency = parse_dependency(name_or_hash)
+      specificaion = @sandbox.specification(dependency)
+      puts specificaion
+      puts ":O"
     end
 
     def transform_dependency(name_or_hash)
