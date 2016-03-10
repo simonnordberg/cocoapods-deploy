@@ -49,6 +49,7 @@ module Pod
         config.lockfile.pod_names.each do |dep|
           transformer = DeployTransformer.new(config.lockfile, config.sandbox)
           dep = transformer.transform_dependency_name(dep)
+          puts dep
 
           source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
           source.fetch(config.sandbox)
