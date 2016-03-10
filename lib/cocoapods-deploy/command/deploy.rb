@@ -58,10 +58,6 @@ module Pod
 
         prepare_for_deployment
 
-        #TODO: Somehow use a custom dependencies_to_lock_pod_named in the lockfile
-        #TODO: Work out way of transforming dependencies without patch
-        # apply_dependency_patches
-        #
         # installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
         # installer.update = update
         # installer.install!
