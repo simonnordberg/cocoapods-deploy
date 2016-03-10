@@ -60,7 +60,7 @@ module Pod
         # Install subspec dependencies based on lockfile
 
         #TODO: Spec
-        installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
+        installer = DeployInstaller.new(config.sandbox, config.podfile, nil)
         installer.install!
       end
     end
