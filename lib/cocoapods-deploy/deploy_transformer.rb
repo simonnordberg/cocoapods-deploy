@@ -78,16 +78,16 @@ module Pod
 
     def transform_dependency(name_or_hash)
       dependency = parse_dependency(name_or_hash)
+      pod = dependency.name
 
       unless @lockfile.checkout_options_for_pod_named(dependency.name)
         root_pod = dependency.root_name
-        pod = dependency.name
         version = @lockfile.version(pod)
         raise Informative, "Missing dependency \"#{pod}\" in Lockfile please run `pod install` or `pod update`." unless version
 
         ({ "#{pod}" => [{ :podspec => podspec_url(root_pod, version) }] })
       else
-        ({ "#{name_or_hash}" => [@lockfile.checkout_options_for_pod_named(dependency.name)] })
+        ({ "#{pod}" => [@lockfile.checkout_options_for_pod_named(dependency.name)] })
       end
     end
   end
