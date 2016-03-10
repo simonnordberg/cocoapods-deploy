@@ -1,5 +1,13 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
+class MockExternalSource
+  def initialize
+  end
+
+  def fetch
+  end
+end
+
 module Pod
   describe Command::Deploy do
 
@@ -7,11 +15,6 @@ module Pod
       @command = Command.parse(%w{ deploy })
       @command.stubs(:verify_lockfile_exists!)
       @command.stubs(:verify_podfile_exists!)
-
-      @installer = DeployInstaller.new(@sandbox, @podfile, nil)
-      @installer.stubs(:install!)
-
-      DeployInstaller.stubs(:new).returns(@installer)
     end
 
     describe 'CLAide' do
@@ -24,6 +27,8 @@ module Pod
 
       before do
         @command.stubs(:transform_podfile)
+        @command.stubs(:install_sources_for_podfile)
+        @command.stubs(:install)
       end
 
       it 'should disable cocoapods-stats' do
@@ -55,6 +60,8 @@ module Pod
     describe 'converting podfile dependencies' do
 
       before do
+        @command.stubs(:install_sources_for_podfile)
+        @command.stubs(:install)
 
         @transformer = DeployTransformer.new(nil)
 
@@ -78,11 +85,15 @@ module Pod
       end
     end
 
-    describe 'when installing' do |variable|
+    describe 'when installing' do
 
       before do
         @podfile = Podfile.new
         @command.stubs(:transform_podfile).returns(@podfile)
+
+        @installer = DeployInstaller.new(@sandbox, @podfile, nil)
+        @installer.stubs(:install!)
+        DeployInstaller.stubs(:new).returns(@installer)
       end
 
       it 'should create new installer' do
@@ -92,6 +103,31 @@ module Pod
 
       it 'should invoke installer' do
         @installer.expects(:install!)
+        @command.run
+      end
+    end
+
+    describe 'when downloading pod sources' do
+
+      before do
+        @dependency = Dependency.new("Mixpanel")
+        @podfile = Podfile.new("path")
+        @podfile.stubs(:dependencies).returns([@dependency])
+
+        @source = MockExternalSource.new
+        @command.stubs(:transform_podfile).returns(@podfile)
+        @command.stubs(:install)
+      end
+
+      it 'should create new external source' do
+        ExternalSources.expects(:from_dependency).with(@dependency, @podfile.defined_in_file).returns(@source)
+        @source.stubs(:fetch)
+        @command.run
+      end
+
+      it 'should fetch source' do
+        ExternalSources.stubs(:from_dependency).returns(@source)
+        @source.expects(:fetch)
         @command.run
       end
     end

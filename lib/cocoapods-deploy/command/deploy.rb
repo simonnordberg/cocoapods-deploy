@@ -44,13 +44,28 @@ module Pod
         transformer.transform_podfile(config.podfile)
       end
 
+      # Installed required sources.
+      def install_sources_for_podfile(podfile)
+        podfile.dependencies.map do |dep|
+          source = ExternalSources.from_dependency(dep, podfile.defined_in_file)
+          source.fetch(config.sandbox)
+        end
+      end
+
+      # Triggers the CocoaPods install process
+      def install(podfile)
+        installer = DeployInstaller.new(config.sandbox, podfile, nil)
+        installer.install!
+      end
+
       def run
         setup_environment
         verify_environment
 
         podfile = transform_podfile
-        installer = DeployInstaller.new(config.sandbox, podfile, nil)
-        installer.install!
+        install_sources_for_podfile(podfile)
+
+        install(podfile)
       end
     end
   end
