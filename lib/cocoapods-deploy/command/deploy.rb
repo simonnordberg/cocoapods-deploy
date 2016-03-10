@@ -58,9 +58,10 @@ module Pod
 
         prepare_for_deployment
 
-        # installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
-        # installer.update = update
-        # installer.install!
+        #TODO: Spec
+        installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
+        installer.update = update
+        installer.install!
       end
     end
   end
