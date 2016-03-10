@@ -1,8 +1,13 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
-def transform(lockfile, podfile)
+def transform_podfile(lockfile, podfile)
   transformer = Pod::DeployTransformer.new(lockfile)
   transformer.transform_podfile(podfile)
+end
+
+def transform_specification(lockfile, spec)
+  transformer = Pod::DeployTransformer.new(lockfile)
+  transformer.transform_specification(spec)
 end
 
 module Pod
@@ -14,7 +19,7 @@ module Pod
           p.pod "Polly", :git => "http://example.org"
         end
 
-        podfile = transform(lockfile, original_podfile)
+        podfile = transform_podfile(lockfile, original_podfile)
         dependency = Dependency.new("Polly", {:git => "http://example.org"})
         podfile.dependencies.should.include dependency
       end
@@ -27,7 +32,7 @@ module Pod
           end
 
           should.raise(RuntimeError) {
-            transform(lockfile, original_podfile)
+            transform_podfile(lockfile, original_podfile)
           }
         end
 
@@ -39,7 +44,7 @@ module Pod
             p.pod "Mixpanel"
           end
 
-          podfile = transform(lockfile, original_podfile)
+          podfile = transform_podfile(lockfile, original_podfile)
           dependency = Dependency.new("Mixpanel", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Mixpanel/1.0/Mixpanel.podspec.json"})
           podfile.dependencies.should.include dependency
         end
@@ -53,7 +58,7 @@ module Pod
               p.pod "Google/Analytics"
             end
 
-            podfile = transform(lockfile, original_podfile)
+            podfile = transform_podfile(lockfile, original_podfile)
             dependency = Dependency.new("Google/Analytics", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Google/1.0/Google.podspec.json"})
             podfile.dependencies.should.include dependency
           end

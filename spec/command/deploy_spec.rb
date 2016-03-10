@@ -152,13 +152,11 @@ module Pod
 
         it 'should transform the specification' do
           specification = Specification.new
-          sandbox = Sandbox.new(".")
-          sandbox.expects(:specification).with("Google").returns(specification)
 
-          Config.instance.expects(:sandbox).returns(sandbox)
+          Config.instance.sandbox.stubs(:specification).returns(specification)
           DeployTransformer.stubs(:new).returns(@transformer)
 
-          @transformer.expects(:transform_specification_for_sandbox).with(specification, sandbox)
+          @transformer.expects(:transform_specification).with(specification)
           @command.run
         end
       end
