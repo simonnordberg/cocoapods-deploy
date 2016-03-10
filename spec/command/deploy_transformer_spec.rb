@@ -1,7 +1,7 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
-def transform_podfile(lockfile, podfile)
-  transformer = Pod::DeployTransformer.new(lockfile, nil)
+def transform_podfile(lockfile, sandbox, podfile)
+  transformer = Pod::DeployTransformer.new(lockfile, sandbox)
   transformer.transform_podfile(podfile)
 end
 
@@ -14,7 +14,7 @@ module Pod
           p.pod "Polly", :git => "http://example.org"
         end
 
-        podfile = transform_podfile(lockfile, original_podfile)
+        podfile = transform_podfile(lockfile, nil, original_podfile)
         dependency = Dependency.new("Polly", {:git => "http://example.org"})
         podfile.dependencies.should.include dependency
       end
@@ -27,7 +27,7 @@ module Pod
           end
 
           should.raise(Informative) {
-            transform_podfile(lockfile, original_podfile)
+            transform_podfile(lockfile, nil, original_podfile)
           }
         end
 
@@ -39,7 +39,7 @@ module Pod
             p.pod "Mixpanel"
           end
 
-          podfile = transform_podfile(lockfile, original_podfile)
+          podfile = transform_podfile(lockfile, nil, original_podfile)
           dependency = Dependency.new("Mixpanel", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Mixpanel/1.0/Mixpanel.podspec.json"})
           podfile.dependencies.should.include dependency
         end
@@ -53,7 +53,7 @@ module Pod
               p.pod "Google/Analytics"
             end
 
-            podfile = transform_podfile(lockfile, original_podfile)
+            podfile = transform_podfile(lockfile, nil, original_podfile)
             dependency = Dependency.new("Google/Analytics", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Google/1.0/Google.podspec.json"})
             podfile.dependencies.should.include dependency
           end
