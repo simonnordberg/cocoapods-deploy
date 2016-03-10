@@ -57,10 +57,10 @@ module Pod
         verify_environment
 
         prepare_for_deployment
+        # Install subspec dependencies based on lockfile
 
         #TODO: Spec
         installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
-        installer.update = update
         installer.install!
       end
     end
