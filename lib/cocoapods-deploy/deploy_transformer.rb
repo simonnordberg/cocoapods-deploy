@@ -63,8 +63,6 @@ module Pod
         version = @lockfile.version(pod)
         raise "Missing dependency in Lockfile please run `pod install` or `pod update`." unless version
 
-        # - Check dependencies for Podspecs if they are a subspec and include them
-        #   and version lock them to their parent spec.
         ({ "#{pod}" => [{ :podspec => podspec_url(root_pod, version) }] })
       else
         name_or_hash

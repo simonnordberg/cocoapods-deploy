@@ -65,6 +65,9 @@ module Pod
         podfile = transform_podfile
         install_sources_for_podfile(podfile)
 
+        # - Check dependencies for Podspecs if they are a subspec and include them
+        #   and version lock them to their parent spec.
+
         install(podfile)
       end
     end
