@@ -51,17 +51,7 @@ module Pod
           source.fetch(config.sandbox)
         end
       end
-
-      # Processes the root specifications for a podfile
-      def transform_specification_dependencies_for_podfile(podfile)
-        specs = podfile.dependencies.map do |dep|
-          config.sandbox.specification(dep.root_name)
-        end
-
-        transformer = DeployTransformer.new(config.lockfile)
-        transformer.transform_specifications_for_podfile(specs, podfile)
-      end
-
+      
       # Triggers the CocoaPods install process
       def install(podfile)
         installer = DeployInstaller.new(config.sandbox, podfile, nil)
@@ -74,7 +64,7 @@ module Pod
 
         podfile = transform_podfile
         install_sources_for_podfile(podfile)
-        transform_specification_dependencies_for_podfile(podfile)
+        podfile = transform_podfile
 
         install(podfile)
       end

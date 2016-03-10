@@ -28,7 +28,6 @@ module Pod
       before do
         @command.stubs(:transform_podfile)
         @command.stubs(:install_sources_for_podfile)
-        @command.stubs(:transform_specification_dependencies_for_podfile)
         @command.stubs(:install)
       end
 
@@ -62,7 +61,6 @@ module Pod
 
       before do
         @command.stubs(:install_sources_for_podfile)
-        @command.stubs(:transform_specification_dependencies_for_podfile)
         @command.stubs(:install)
 
         @transformer = DeployTransformer.new(nil)
@@ -131,36 +129,6 @@ module Pod
         ExternalSources.stubs(:from_dependency).returns(@source)
         @source.expects(:fetch)
         @command.run
-      end
-
-      describe 'and then transforming the specifications' do
-
-        before do
-          @transformer = DeployTransformer.new(nil)
-
-          ExternalSources.stubs(:from_dependency).returns(@source)
-          @source.stubs(:fetch)
-        end
-
-        it 'should get specification' do
-          Config.instance.sandbox.expects(:specification).with("Google")
-          @command.run
-        end
-
-        it 'should create transformer with lockfile' do
-          DeployTransformer.expects(:new).with(Config.instance.lockfile).returns(@transformer)
-          @command.run
-        end
-
-        it 'should transform the specification' do
-          specification = Specification.new
-
-          Config.instance.sandbox.stubs(:specification).returns(specification)
-          DeployTransformer.stubs(:new).returns(@transformer)
-
-          @transformer.expects(:transform_specifications_for_podfile).with([specification], @podfile)
-          @command.run
-        end
       end
     end
   end
