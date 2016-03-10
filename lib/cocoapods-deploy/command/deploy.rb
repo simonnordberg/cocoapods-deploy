@@ -152,11 +152,11 @@ module Pod
         download_dependency(dep)
       end
 
-      # This method sets up the enviroment to be optimised
+      # This method sets up the environment to be optimised
       # for CocoaPod Deployment.
       #
       # Turning off things like repo cloning, clean-up and statistics.
-      def setup_enviroment
+      def setup_environment
         # Disable Cocoapods Stats - Due to
         # https://github.com/CocoaPods/cocoapods-stats/issues/28
         ENV['COCOAPODS_DISABLE_STATS'] = "1"
@@ -170,17 +170,17 @@ module Pod
         config.clean = false
       end
 
-      # Verify the enviroment is ready for deployment
+      # Verify the environment is ready for deployment
       # i.e Do we have a podfile and lockfile.
-      def verify_enviroment
+      def verify_environment
         verify_podfile_exists!
         verify_lockfile_exists!
       end
 
       def run
 
-        setup_enviroment
-        verify_enviroment
+        setup_environment
+        verify_environment
 
         # UI.puts("- Deploying Pods")
         #
@@ -191,17 +191,14 @@ module Pod
         # end
 
       #  run_install_with_update(false)
-      end
 
-      def run_install_with_update(update)
-
-        #TODO: Somehow use a custom dependencies_to_lock_pod_named in the lockfile
-        #TODO: Work out way of transforming dependencies without patch
-        # apply_dependency_patches
-        #
-        # installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
-        # installer.update = update
-        # installer.install!
+      #TODO: Somehow use a custom dependencies_to_lock_pod_named in the lockfile
+      #TODO: Work out way of transforming dependencies without patch
+      # apply_dependency_patches
+      #
+      # installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
+      # installer.update = update
+      # installer.install!
       end
     end
   end
