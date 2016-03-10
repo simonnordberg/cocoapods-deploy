@@ -50,7 +50,7 @@ module Pod
           transformer = DeployTransformer.new(config.lockfile, config.sandbox)
           dep = transformer.transform_dependency_name(dep)
 
-          unless dep.external_source
+          if dep.external_source = nil
             source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
             source.fetch(config.sandbox)
           end
