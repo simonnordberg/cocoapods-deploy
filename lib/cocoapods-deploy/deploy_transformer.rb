@@ -45,6 +45,8 @@ module Pod
         hash["dependencies"] << podspec_dependencies if podspec_dependencies
       end if dependencies && @sandbox
 
+      puts hash["dependencies"]
+
       children = hash["children"]
       hash["children"] = children.map do |target|
         transform_target_definition_hash(target)
@@ -70,8 +72,8 @@ module Pod
     def collect_podspec_dependencies(name_or_hash)
       dependency = parse_dependency(name_or_hash)
       specification = @sandbox.specification(dependency)
+
       specification.dependencies.map do |dep|
-        puts "#{dep}"
         transform_dependency(dep.name)
       end
     end
