@@ -138,6 +138,8 @@ module Pod
         @source.expects(:fetch)
         @command.run
       end
+
+      # Figure out how to test external source here.
     end
   end
 end

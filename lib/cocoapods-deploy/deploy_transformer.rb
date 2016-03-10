@@ -79,7 +79,7 @@ module Pod
     def transform_dependency(name_or_hash)
       dependency = parse_dependency(name_or_hash)
 
-      unless dependency.external_source
+      unless dependency.external_source || @lockfile.checkout_options_for_pod_named(dependency.name)
         root_pod = dependency.root_name
         pod = dependency.name
         version = @lockfile.version(pod)
