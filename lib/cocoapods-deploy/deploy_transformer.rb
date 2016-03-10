@@ -38,7 +38,8 @@ module Pod
         transform_dependency(dep)
       end if dependencies
 
-      dependencies = hash["dependencies"]
+      #Duplicate this to prevent infinte loop
+      dependencies = hash["dependencies"].dup
       dependencies.each do |dep|
         podspec_dependencies = collect_podspec_dependencies(dep)
         hash["dependencies"] << podspec_dependencies if podspec_dependencies
@@ -70,6 +71,7 @@ module Pod
       dependency = parse_dependency(name_or_hash)
       specification = @sandbox.specification(dependency)
       specification.dependencies.map do |dep|
+        puts "#{dep}"
         transform_dependency(dep.name)
       end
     end
