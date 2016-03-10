@@ -48,9 +48,7 @@ module Pod
         setup_environment
         verify_environment
 
-        #TODO: BDD Below
         podfile = transform_podfile
-
         installer = DeployInstaller.new(config.sandbox, podfile, nil)
         installer.install!
       end
