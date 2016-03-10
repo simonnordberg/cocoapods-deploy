@@ -139,6 +139,8 @@ module Pod
         @command.run
       end
 
+      # TODO: Reducing duplicates
+
       # Figure out how to test external source here.
 
       # Figure out how to handle location
