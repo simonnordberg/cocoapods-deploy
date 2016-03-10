@@ -5,6 +5,8 @@ module Pod
 
     before do
       @command = Command.parse(%w{ deploy })
+      @command.stubs(:verify_lockfile_exists!)
+      @command.stubs(:verify_podfile_exists!)
     end
 
     describe 'CLAide' do
@@ -25,6 +27,16 @@ module Pod
 
     it 'should skip source file clean' do
       Config.instance.expects(:clean=).with(false)
+      @command.run
+    end
+
+    it 'should verify podfile' do
+      @command.expects(:verify_lockfile_exists!)
+      @command.run
+    end
+
+    it 'should verify lockfile' do
+      @command.expects(:verify_podfile_exists!)
       @command.run
     end
   end

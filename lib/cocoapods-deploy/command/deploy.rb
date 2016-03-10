@@ -170,13 +170,18 @@ module Pod
         config.clean = false
       end
 
+      # Verify the enviroment is ready for deployment
+      # i.e Do we have a podfile and lockfile.
+      def verify_enviroment
+        verify_podfile_exists!
+        verify_lockfile_exists!
+      end
+
       def run
 
         setup_enviroment
+        verify_enviroment
         return
-
-        verify_podfile_exists!
-        verify_lockfile_exists!
 
         UI.puts("- Deploying Pods")
 
