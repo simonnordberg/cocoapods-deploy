@@ -3,9 +3,9 @@ require File.expand_path('../../spec_helper', __FILE__)
 module Pod
   describe DeployTransformer do
 
-    it "should do magic" do
+    before do
       lockfile = Lockfile.new({})
-      podfile = Podfile.new do |p|
+      original_podfile = Podfile.new do |p|
         p.pod "Quick"
 
         p.target "yo" do
@@ -16,9 +16,13 @@ module Pod
         end
       end
 
-      t = DeployTransformer.new(lockfile)
-      t.transform_podfile(podfile)
-      t.should.not.equal nil
+      transformer = DeployTransformer.new(lockfile)
+      @podfile = transformer.transform_podfile(original_podfile)
+    end
+
+    it "should preserve external dependencies" do
+      dependency = Dependency.new("Polly", {:git => "http://example.org"})
+      @podfile.dependencies.should.include dependency
     end
   end
 end

@@ -10,7 +10,8 @@ module Pod
     def transform_podfile(podfile)
       internal_hash = podfile.to_hash
       transform_internal_hash(internal_hash)
-      Podfile.new(podfile.defined_in_file, internal_hash)
+      
+      Podfile.from_hash(internal_hash, podfile.defined_in_file)
     end
 
     private
