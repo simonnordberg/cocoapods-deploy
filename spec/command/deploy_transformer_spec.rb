@@ -20,7 +20,7 @@ module Pod
     end
 
     describe "when transforming repo dependencies" do
-      it "should abort when one isn't in the lockfile" do
+      it "should abort when absent from lockfile" do
         lockfile = Lockfile.new({})
         original_podfile = Podfile.new do |p|
           p.pod "Mixpanel"
@@ -29,6 +29,19 @@ module Pod
         should.raise(RuntimeError) {
           transform(lockfile, original_podfile)
         }
+      end
+
+      it "should transform to Podspec URL" do
+        lockfile = Lockfile.new({
+          "PODS" => ["Mixpanel (1.0)"]
+        })
+        original_podfile = Podfile.new do |p|
+          p.pod "Mixpanel"
+        end
+
+        podfile = transform(lockfile, original_podfile)
+        dependency = Dependency.new("Mixpanel", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Mixpanel/1.0/Mixpanel.podspec.json"})
+        podfile.dependencies.should.include dependency
       end
     end
   end
