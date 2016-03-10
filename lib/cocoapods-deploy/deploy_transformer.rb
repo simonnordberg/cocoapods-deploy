@@ -73,7 +73,7 @@ module Pod
 
       specification.dependencies.map do |dep|
         transform_dependency(dep.name)
-      end
+      end if specification
     end
 
     def transform_dependency(name_or_hash)
