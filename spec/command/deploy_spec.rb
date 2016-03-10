@@ -138,6 +138,8 @@ module Pod
         @source.expects(:fetch)
         @command.run
       end
+
+      #TODO: Implement External Source
     end
   end
 end
