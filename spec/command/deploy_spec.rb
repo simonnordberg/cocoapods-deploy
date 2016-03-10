@@ -74,11 +74,11 @@ module Pod
         @command.stubs(:install_sources_for_lockfile)
         @command.stubs(:install)
 
-        @transformer = DeployTransformer.new(nil)
+        @transformer = DeployTransformer.new(nil, nil)
       end
 
       it 'should create transformer with lockfile' do
-        DeployTransformer.expects(:new).with(@lockfile).returns(@transformer)
+        DeployTransformer.expects(:new).with(@lockfile, Config.instance.sandbox).returns(@transformer)
         @command.run
       end
 
@@ -118,7 +118,7 @@ module Pod
         @dependency = Dependency.new("Google/Analytics")
         @lockfile.stubs(:pod_names).returns(["Google/Analytics"])
 
-        @transformer = DeployTransformer.new(nil)
+        @transformer = DeployTransformer.new(nil, nil)
         @transformer.stubs(:transform_dependency_name).with("Google/Analytics").returns(@dependency)
         DeployTransformer.stubs(:new).returns(@transformer)
 

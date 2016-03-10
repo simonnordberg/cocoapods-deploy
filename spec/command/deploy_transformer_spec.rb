@@ -1,7 +1,7 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
 def transform_podfile(lockfile, podfile)
-  transformer = Pod::DeployTransformer.new(lockfile)
+  transformer = Pod::DeployTransformer.new(lockfile, nil)
   transformer.transform_podfile(podfile)
 end
 

@@ -40,14 +40,14 @@ module Pod
       # and making sure we have eveything we need for Subspecs which
       # typially don't work with Podspec based depedencies.
       def transform_podfile
-        transformer = DeployTransformer.new(config.lockfile)
+        transformer = DeployTransformer.new(config.lockfile, config.sandbox)
         transformer.transform_podfile(config.podfile)
       end
 
       # Installed required sources.
       def install_sources_for_lockfile
         config.lockfile.pod_names.each do |dep|
-          transformer = DeployTransformer.new(config.lockfile)
+          transformer = DeployTransformer.new(config.lockfile, config.sandbox)
           dep = transformer.transform_dependency_name(dep)
           source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
           source.fetch(config.sandbox)

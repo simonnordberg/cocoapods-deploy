@@ -2,9 +2,11 @@ module Pod
   class DeployTransformer
 
     attr_accessor :lockfile
+    attr_accessor :sandbox
 
-    def initialize(lockfile)
+    def initialize(lockfile, sandbox)
       @lockfile = lockfile
+      @sandbox = sandbox
     end
 
     def transform_podfile(podfile)
