@@ -64,6 +64,13 @@ module Pod
         setup_environment
         verify_environment
 
+        #TODO: Update this so we get the pods actually used in the lockfile.
+        # - Then we use this as a look up for the podfile.
+        # - We map the ones we match to the lockfile
+        # - We leave it to the resolver to notice there is something missing
+        # - When it does notice this we catch the error and replace it with something
+        # more informative
+
         #Install the sources from the lockfile
         install_sources_for_lockfile
         install(transform_podfile)
