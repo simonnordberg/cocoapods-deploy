@@ -24,7 +24,7 @@ module Pod
     def transform_target_definition_hash(hash)
       dependencies = hash["dependencies"]
       dependencies.map do |dep|
-        transform_dependency_hash(dep)
+        transform_dependency(dep)
       end if dependencies
 
       children = hash["children"]
@@ -33,14 +33,30 @@ module Pod
       end if children
     end
 
-    def transform_dependency_hash(hash)
-      # - If external leave it be
-      # - If Repo transform to podspec url for version cross-referenced against
-      # lockfile
-      # - Check dependencies for podspecs if they are a subspec and include those
-      # and version lock to their parent spec.
-      # - If repo based pod or subspec not found in lockfile then abort.
-      puts hash.to_s
+    def parse_dependency(name_or_hash)
+      if name_or_hash.is_a?(Hash)
+        name = name_or_hash.keys.first
+        requirements = name_or_hash.values.first
+        Dependency.new(name, *requirements)
+      else
+        Dependency.new(name_or_hash)
+      end
+    end
+
+    def transform_dependency(name_or_hash)
+      dependency = parse_dependency(name_or_hash)
+
+      unless dependency.external_source
+        # - If Repo transform to podspec url for version cross-referenced against
+        # lockfile
+        # - Check dependencies for podspecs if they are a subspec and include those
+        # and version lock to their parent spec.
+        # - If repo based pod or subspec not found in lockfile then abort.
+        name_or_hash
+      else
+        # - If external leave it be
+        name_or_hash
+      end
     end
   end
 end
