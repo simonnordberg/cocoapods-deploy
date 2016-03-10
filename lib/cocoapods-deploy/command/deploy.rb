@@ -52,7 +52,7 @@ module Pod
           source = ExternalSources.from_dependency(dep, podfile.defined_in_file)
           source.fetch(sandbox)
 
-          spec = sandbox.specification(dep.name)
+          spec = sandbox.specification(dep.root_name)
           transformer = DeployTransformer.new(config.lockfile)
           transformer.transform_specification_for_sandbox(spec, sandbox)
         end

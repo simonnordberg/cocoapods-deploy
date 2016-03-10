@@ -130,6 +130,30 @@ module Pod
         @source.expects(:fetch)
         @command.run
       end
+
+      describe 'andthen transforming the specifications' do
+
+        it 'should get specification' do
+
+          # spec = sandbox.specification(dep.root_name)
+          # transformer = DeployTransformer.new(config.lockfile)
+          # transformer.transform_specification_for_sandbox(spec, sandbox)
+        end
+
+        it 'should create transformer with lockfile' do
+
+          # spec = sandbox.specification(dep.root_name)
+          # transformer = DeployTransformer.new(config.lockfile)
+          # transformer.transform_specification_for_sandbox(spec, sandbox)
+        end
+
+        it 'should transform specification' do
+
+          # spec = sandbox.specification(dep.root_name)
+          # transformer = DeployTransformer.new(config.lockfile)
+          # transformer.transform_specification_for_sandbox(spec, sandbox)
+        end
+      end
     end
   end
 end
