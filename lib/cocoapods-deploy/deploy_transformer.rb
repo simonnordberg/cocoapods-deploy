@@ -83,6 +83,7 @@ module Pod
         root_pod = dependency.root_name
         pod = dependency.name
         version = @lockfile.version(pod)
+        puts ":O"
         raise Informative, "Missing dependency \"#{pod}\" in Lockfile please run `pod install` or `pod update`." unless version
 
         ({ "#{pod}" => [{ :podspec => podspec_url(root_pod, version) }] })
