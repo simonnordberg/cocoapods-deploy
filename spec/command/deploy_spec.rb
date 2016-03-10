@@ -7,5 +7,9 @@ module Pod
         Command.parse(%w{ deploy }).should.be.instance_of Command::Deploy
       end
     end
+
+    it 'should disable cocoapods-stats' do
+      expect(ENV["COCOAPODS_DISABLE_STATS"]).to equal("1")
+    end
   end
 end

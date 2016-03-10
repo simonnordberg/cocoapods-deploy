@@ -157,18 +157,18 @@ module Pod
         verify_lockfile_exists!
 
         UI.puts("- Deploying Pods")
-        #
+
         config.lockfile.pod_names.each do |pod|
-        #   version = config.lockfile.version(pod)
-        #   UI.puts("- Deploying #{pod} #{version}")
-        #   transform_pod_and_version(pod, version)
+          version = config.lockfile.version(pod)
+          UI.puts("- Deploying #{pod} #{version}")
+          transform_pod_and_version(pod, version)
         end
 
         run_install_with_update(false)
       end
 
       def run_install_with_update(update)
-        ENV['COCOAPODS_DISABLE_STATS'] = "true" #Disable Cocoapods Stats
+        ENV['COCOAPODS_DISABLE_STATS'] = "1" #Disable Cocoapods Stats
         config.skip_repo_update = true #Force this to be true so it is always skipped
         config.clean = false #Disable source files from being cleaned
 
