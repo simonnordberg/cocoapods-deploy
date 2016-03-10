@@ -10,6 +10,7 @@ module Pod
     def transform_podfile(podfile)
       internal_hash = podfile.to_hash
       transform_internal_hash(internal_hash)
+      Podfile.new(podfile.defined_in_file, internal_hash)
     end
 
     private
@@ -43,25 +44,6 @@ module Pod
     end
   end
 end
-
-
-# podfile = config.podfile
-# target_definitions = podfile.to_hash["target_definitions"]
-# puts podfile.to_hash["target_definitions"]
-
-#return
-
-# - Look at the Podfile
-#   - Verify against Lockfile
-#   - Transform Repo Dependencies to Podspec Ones”
-
-# UI.puts("- Deploying Pods")
-#
-# config.lockfile.pod_names.each do |pod|
-#   version = config.lockfile.version(pod)
-#   UI.puts("- Deploying #{pod} #{version}")
-#   transform_pod_and_version(pod, version)
-# end
 
 # def podspec_url(pod, version)
 #   "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
