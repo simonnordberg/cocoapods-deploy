@@ -66,9 +66,7 @@ module Pod
 
         # - Check dependencies for podspecs if they are a subspec and include those
         # and version lock to their parent spec.
-        # - If repo based pod or subspec not found in lockfile then abort.
       else
-        # - If external leave it be
         name_or_hash
       end
     end
