@@ -4,10 +4,6 @@ module Pod
 
       include Project
 
-      # The trasformer to use for transforming dependencies in the Podfile
-      # against the lockfile.
-      attr_accessor :transformer
-
       self.summary = 'Install project dependencies to Podfile.lock versions without pulling down full podspec repo.'
 
       self.description = <<-DESC
@@ -39,18 +35,13 @@ module Pod
         verify_lockfile_exists!
       end
 
-      def create_transformer_for_lockfile
-        @transformer = DeployTransformer.new(config.lockfile)
-      end
-
       # This prepares the Podfile and Lockfile for deployment
       # by transforming Repo depedencies to Poddpec based dependencies
       # and making sure we have eveything we need for Subspecs which
       # typially don't work with Podspec based depedencies.
       def transform_podfile
-        create_transformer_for_lockfile unless @transformer
-        p = @transformer.transform_podfile(config.podfile)
-        puts p.dependencies
+        transformer = DeployTransformer.new(config.lockfile)
+        transformer.transform_podfile(config.podfile)
       end
 
       def run
@@ -60,7 +51,6 @@ module Pod
         #TODO: BDD Below
         podfile = transform_podfile
 
-        #TODO: Spec
         installer = DeployInstaller.new(config.sandbox, podfile, nil)
         installer.install!
       end

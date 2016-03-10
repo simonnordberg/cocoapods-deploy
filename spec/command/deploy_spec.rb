@@ -7,6 +7,11 @@ module Pod
       @command = Command.parse(%w{ deploy })
       @command.stubs(:verify_lockfile_exists!)
       @command.stubs(:verify_podfile_exists!)
+
+      @installer = DeployInstaller.new(@sandbox, @podfile, nil)
+      @installer.stubs(:install!)
+
+      DeployInstaller.stubs(:new).returns(@installer)
     end
 
     describe 'CLAide' do
@@ -50,6 +55,9 @@ module Pod
     describe 'converting podfile dependencies' do
 
       before do
+
+        @transformer = DeployTransformer.new(nil)
+
         @podfile = Podfile.new
         Config.instance.stubs(:podfile).returns(@podfile)
 
@@ -58,17 +66,34 @@ module Pod
       end
 
       it 'should create transformer with lockfile' do
+        DeployTransformer.expects(:new).with(@lockfile).returns(@transformer)
         @command.run
-        @command.transformer.should.not.equal nil
-        @command.transformer.lockfile.should.equal @lockfile
       end
 
       it 'should create transform podfile' do
-        @command.transformer = DeployTransformer.new(@lockfile)
-        @command.transformer.expects(:transform_podfile).with(@podfile)
+        @transformer.expects(:transform_podfile).with(@podfile)
+
+        DeployTransformer.stubs(:new).returns(@transformer)
+        @command.run
+      end
+    end
+
+    describe 'when installing' do |variable|
+
+      before do
+        @podfile = Podfile.new
+        @command.stubs(:transform_podfile).returns(@podfile)
+      end
+
+      it 'should create new installer' do
+        DeployInstaller.expects(:new).with(Config.instance.sandbox, @podfile, nil).returns(@installer)
         @command.run
       end
 
+      it 'should invoke installer' do
+        @installer.expects(:install!)
+        @command.run
+      end
     end
   end
 end
