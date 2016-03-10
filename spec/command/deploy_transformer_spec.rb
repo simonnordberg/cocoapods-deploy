@@ -26,7 +26,7 @@ module Pod
             p.pod "Mixpanel"
           end
 
-          should.raise(RuntimeError) {
+          should.raise(Informative) {
             transform_podfile(lockfile, original_podfile)
           }
         end
