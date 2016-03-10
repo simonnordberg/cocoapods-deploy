@@ -198,9 +198,6 @@ module Pod
 
         prepare_for_deployment
 
-
-      #  run_install_with_update(false)
-
       #TODO: Somehow use a custom dependencies_to_lock_pod_named in the lockfile
       #TODO: Work out way of transforming dependencies without patch
       # apply_dependency_patches
