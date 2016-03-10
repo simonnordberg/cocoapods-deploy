@@ -9,29 +9,34 @@ module Pod
 
     def transform_podfile(podfile)
       internal_hash = podfile.to_hash
-      transform_internal_hash(internal_hash)
+      new_hash = transform_internal_hash(internal_hash)
 
-      Podfile.from_hash(internal_hash, podfile.defined_in_file)
+      Podfile.from_hash(new_hash, podfile.defined_in_file)
     end
 
     private
 
     def transform_internal_hash(hash)
-      hash["target_definitions"].map do |target|
+      targets = hash["target_definitions"]
+      targets.map do |target|
         transform_target_definition_hash(target)
-      end
+      end if targets
+
+      hash
     end
 
     def transform_target_definition_hash(hash)
       dependencies = hash["dependencies"]
-      dependencies.map do |dep|
+      hash["dependencies"] = dependencies.map do |dep|
         transform_dependency(dep)
       end if dependencies
 
       children = hash["children"]
-      children.map do |target|
+      hash["children"] = children.map do |target|
         transform_target_definition_hash(target)
       end if children
+
+      hash
     end
 
     def parse_dependency(name_or_hash)
@@ -57,9 +62,8 @@ module Pod
         version = @lockfile.version(pod)
         raise "Missing dependency in Lockfile please run `pod install` or `pod update`." unless version
 
-        { pod => [{ :podspec => podspec_url(pod, version) }] }
-        # - If Repo transform to podspec url for version cross-referenced against
-        # lockfile
+        ({ "#{pod}" => [{ :podspec => podspec_url(pod, version) }] })
+
         # - Check dependencies for podspecs if they are a subspec and include those
         # and version lock to their parent spec.
         # - If repo based pod or subspec not found in lockfile then abort.
@@ -72,30 +76,7 @@ module Pod
 end
 
 
-#
-# #Hack to help transform target dependencies
-# class DeployTransformer
-#
-#   def self.lockfile=(lockfile)
-#     @@lockfile = lockfile
-#   end
-#
-#   #TODO: Remove Workaround resolver trying to pull down invalid pods
-#   def self.in_lockfile(dep)
-#     @@lockfile.pod_names.include? dep.root_name
-#   end
-#
-#   #TODO: Remove lockfile modifications
-#   def self.transform_dependency_to_sandbox_podspec(dep)
-#     unless dep.external_source
-#       version = @@lockfile.version(dep)
-#       checkout = { :podspec => podspec_url(dep.root_name, version) }
-#       dep.external_source = checkout
-#       dep.requirement = Requirement.create(checkout)
-#     end
-#
-#     dep
-#   end
+
 #
 #   #TODO: Provide cleaner way of doing this in the future
 #   def self.inject_subspec_dependencies
