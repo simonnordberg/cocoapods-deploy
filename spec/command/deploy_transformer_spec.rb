@@ -5,9 +5,9 @@ def transform_podfile(lockfile, podfile)
   transformer.transform_podfile(podfile)
 end
 
-def transform_specification(lockfile, spec)
+def transform_specification(lockfile, spec, podfile)
   transformer = Pod::DeployTransformer.new(lockfile)
-  transformer.transform_specification(spec)
+  transformer.transform_specifications_for_podfile([spec], podfile)
 end
 
 module Pod
@@ -67,16 +67,6 @@ module Pod
     end
 
     describe "when transforming specification" do
-      # it "should preserve external dependencies" do
-      #   lockfile = Lockfile.new({})
-      #   original_spec = Specification.new do |p|
-      #     p.dependency "Polly", :git => "http://example.org"
-      #   end
-      #
-      #   spec = transform_specification(lockfile, original_spec)
-      #   dependency = Dependency.new("Polly", {:git => "http://example.org"})
-      #   spec.dependencies.should.include dependency
-      # end
       #
       # describe "when transforming repo dependencies" do
       #   it "should abort when absent from lockfile" do
