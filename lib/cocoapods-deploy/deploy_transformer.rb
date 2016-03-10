@@ -39,6 +39,11 @@ module Pod
         transform_dependency(dep)
       end if dependencies
 
+      dependencies.each do |dep|
+        podspec_dependencies = collect_podspec_dependencies(dep)
+        hash["dependencies"] << podspec_dependencies if podspec_dependencies
+      end if dependencies
+
       children = hash["children"]
       hash["children"] = children.map do |target|
         transform_target_definition_hash(target)
@@ -59,6 +64,9 @@ module Pod
 
     def podspec_url(pod, version)
       "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
+    end
+
+    def collect_podspec_dependencies(name_or_hash)
     end
 
     def transform_dependency(name_or_hash)
