@@ -71,7 +71,7 @@ module Pod
       dependency = parse_dependency(name_or_hash)
       specification = @sandbox.specification(dependency.root_name)
 
-      dependencies = pecification.dependencies.map do |dep|
+      dependencies = specification.dependencies.map do |dep|
         begin
           transform_dependency(dep.name)
         rescue Informative
