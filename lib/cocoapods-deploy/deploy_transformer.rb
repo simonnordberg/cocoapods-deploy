@@ -40,7 +40,7 @@ module Pod
 
       #Duplicate this to prevent infinte loop
       dependencies = hash["dependencies"]
-      dependencies.map do |dep|
+      dependencies.dup.map do |dep|
         podspec_dependencies = collect_podspec_dependencies(dep)
         hash["dependencies"].concat(podspec_dependencies) if podspec_dependencies
       end if dependencies && @sandbox
