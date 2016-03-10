@@ -50,6 +50,7 @@ module Pod
           transformer = DeployTransformer.new(config.lockfile, config.sandbox)
           dep = transformer.transform_dependency_name(dep)
           puts dep
+          puts config.lockfile.checkout_options_for_pod_named(dep.name)
 
           source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
           source.fetch(config.sandbox)
