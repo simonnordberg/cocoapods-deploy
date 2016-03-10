@@ -118,6 +118,10 @@ module Pod
         @dependency = Dependency.new("Google/Analytics")
         @lockfile.stubs(:pod_names).returns(["Google/Analytics"])
 
+        @transformer = DeployTransformer.new(nil)
+        @transformer.stubs(:transform_dependency_name).with("Google/Analytics").returns(@dependency)
+        DeployTransformer.stubs(:new).returns(@transformer)
+
         @source = MockExternalSource.new
         @command.stubs(:transform_podfile).returns(@podfile)
         @command.stubs(:install)
