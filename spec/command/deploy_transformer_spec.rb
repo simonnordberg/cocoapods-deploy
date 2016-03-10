@@ -125,6 +125,8 @@ module Pod
       end
 
       # Figure out how to test external source here.
+
+      # TODO: Test collect_podspec_dependencies as well
     end
   end
 end
