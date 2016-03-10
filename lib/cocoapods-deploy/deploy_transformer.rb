@@ -87,7 +87,7 @@ module Pod
 
         ({ "#{pod}" => [{ :podspec => podspec_url(root_pod, version) }] })
       else
-        name_or_hash
+        ({ "#{name_or_hash}" => [@lockfile.checkout_options_for_pod_named(dependency.name)] })
       end
     end
   end
