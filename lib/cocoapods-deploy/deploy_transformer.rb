@@ -39,7 +39,7 @@ module Pod
       end if dependencies
 
       #Duplicate this to prevent infinte loop
-      dependencies = hash["dependencies"].dup
+      dependencies = hash["dependencies"]
       dependencies.map do |dep|
         podspec_dependencies = collect_podspec_dependencies(dep)
         hash["dependencies"].concat(podspec_dependencies) if podspec_dependencies
