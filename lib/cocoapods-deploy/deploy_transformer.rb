@@ -68,9 +68,10 @@ module Pod
 
     def collect_podspec_dependencies(name_or_hash)
       dependency = parse_dependency(name_or_hash)
-      specificaion = @sandbox.specification(dependency)
-      puts specificaion
-      puts ":O"
+      specification = @sandbox.specification(dependency)
+      specification.dependencies.map do |dep|
+        transform_dependency(dep)
+      end
     end
 
     def transform_dependency(name_or_hash)

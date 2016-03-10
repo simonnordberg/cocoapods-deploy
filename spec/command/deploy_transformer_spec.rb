@@ -76,11 +76,9 @@ module Pod
             p.pod "GoogleAnalytics"
           end
 
-          transform_podfile(lockfile, sandbox, original_podfile)
-          spec.should.not.equal nil
-          # should.raise(Informative) {
-          #   transform_podfile(lockfile, sandbox, original_podfile)
-          # }
+          should.raise(Informative) {
+            transform_podfile(lockfile, sandbox, original_podfile)
+          }
       end
     #
     #     it "should transform to Podspec URL" do
