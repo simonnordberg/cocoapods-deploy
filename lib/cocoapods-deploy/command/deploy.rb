@@ -177,11 +177,11 @@ module Pod
         verify_lockfile_exists!
       end
 
-      def run
-
-        setup_environment
-        verify_environment
-
+      # This prepares the Podfile and Lockfile for deployment
+      # by transforming Repo depedencies to Poddpec based dependencies
+      # and making sure we have eveything we need for Subspecs which
+      # typially don't work with Podspec based depedencies.
+      def prepare_for_deployment
         # UI.puts("- Deploying Pods")
         #
         # config.lockfile.pod_names.each do |pod|
@@ -189,6 +189,15 @@ module Pod
         #   UI.puts("- Deploying #{pod} #{version}")
         #   transform_pod_and_version(pod, version)
         # end
+      end
+
+      def run
+
+        setup_environment
+        verify_environment
+
+        prepare_for_deployment
+
 
       #  run_install_with_update(false)
 
