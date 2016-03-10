@@ -71,23 +71,32 @@ module Pod
       dependency = parse_dependency(name_or_hash)
       specification = @sandbox.specification(dependency.root_name)
 
-      specification.dependencies.map do |dep|
-        transform_dependency(dep.name)
+      dependencies = pecification.dependencies.map do |dep|
+        begin
+          transform_dependency(dep.name)
+        rescue Informative
+          nil
+        end
       end if specification
+
+      dependencies.select { |dep|
+        dep != nil
+      }
     end
 
     def transform_dependency(name_or_hash)
       dependency = parse_dependency(name_or_hash)
       pod = dependency.name
+      checkout_options = @lockfile.checkout_options_for_pod_named(pod)
 
-      unless @lockfile.checkout_options_for_pod_named(dependency.name)
+      unless checkout_options
         root_pod = dependency.root_name
         version = @lockfile.version(pod)
         raise Informative, "Missing dependency \"#{pod}\" in Lockfile please run `pod install` or `pod update`." unless version
 
         ({ "#{pod}" => [{ :podspec => podspec_url(root_pod, version) }] })
       else
-        ({ "#{pod}" => [@lockfile.checkout_options_for_pod_named(dependency.name)] })
+        ({ "#{pod}" => [checkout_options] })
       end
     end
   end

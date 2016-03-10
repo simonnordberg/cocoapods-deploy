@@ -140,6 +140,8 @@ module Pod
       end
 
       # Figure out how to test external source here.
+
+      # Figure out how to handle location
     end
   end
 end
