@@ -8,9 +8,60 @@ module Pod
     end
 
     def transform_podfile(podfile)
+      internal_hash = podfile.to_hash
+      transform_internal_hash(internal_hash)
+    end
+
+    private
+
+    def transform_internal_hash(hash)
+      hash["target_definitions"].map do |target|
+        transform_target_definition_hash(target)
+      end
+    end
+
+    def transform_target_definition_hash(hash)
+      dependencies = hash["dependencies"]
+      dependencies.map do |dep|
+        transform_dependency_hash(dep)
+      end if dependencies
+
+      children = hash["children"]
+      children.map do |target|
+        transform_target_definition_hash(target)
+      end if children
+    end
+
+    def transform_dependency_hash(hash)
+      # - If external leave it be
+      # - If Repo transform to podspec url for version cross-referenced against
+      # lockfile
+      # - Check dependencies for podspecs if they are a subspec and include those
+      # and version lock to their parent spec.
+      # - If repo based pod or subspec not found in lockfile then abort.
+      puts hash.to_s
     end
   end
 end
+
+
+# podfile = config.podfile
+# target_definitions = podfile.to_hash["target_definitions"]
+# puts podfile.to_hash["target_definitions"]
+
+#return
+
+# - Look at the Podfile
+#   - Verify against Lockfile
+#   - Transform Repo Dependencies to Podspec Ones”
+
+# UI.puts("- Deploying Pods")
+#
+# config.lockfile.pod_names.each do |pod|
+#   version = config.lockfile.version(pod)
+#   UI.puts("- Deploying #{pod} #{version}")
+#   transform_pod_and_version(pod, version)
+# end
 
 # def podspec_url(pod, version)
 #   "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"

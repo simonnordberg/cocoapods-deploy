@@ -48,27 +48,8 @@ module Pod
       # and making sure we have eveything we need for Subspecs which
       # typially don't work with Podspec based depedencies.
       def prepare_for_deployment
-
         create_transformer_for_lockfile unless @transformer
         @transformer.transform_podfile(config.podfile)
-
-        # podfile = config.podfile
-        # target_definitions = podfile.to_hash["target_definitions"]
-        # puts podfile.to_hash["target_definitions"]
-
-        #return
-
-        # - Look at the Podfile
-        #   - Verify against Lockfile
-        #   - Transform Repo Dependencies to Podspec Ones
-
-        # UI.puts("- Deploying Pods")
-        #
-        # config.lockfile.pod_names.each do |pod|
-        #   version = config.lockfile.version(pod)
-        #   UI.puts("- Deploying #{pod} #{version}")
-        #   transform_pod_and_version(pod, version)
-        # end
       end
 
       def run
