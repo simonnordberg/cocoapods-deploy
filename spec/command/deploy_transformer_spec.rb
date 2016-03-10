@@ -60,5 +60,47 @@ module Pod
         end
       end
     end
+
+    # describe "when transforming podspec dependencies" do
+    #     it "should abort when absent from lockfile" do
+    #       lockfile = Lockfile.new({})
+    #       original_podfile = Podfile.new do |p|
+    #         p.pod "Mixpanel"
+    #       end
+    #
+    #       should.raise(Informative) {
+    #         transform_podfile(lockfile, nil, original_podfile)
+    #       }
+    #     end
+    #
+    #     it "should transform to Podspec URL" do
+    #       lockfile = Lockfile.new({
+    #         "PODS" => ["Mixpanel (1.0)"]
+    #       })
+    #       original_podfile = Podfile.new do |p|
+    #         p.pod "Mixpanel"
+    #       end
+    #
+    #       podfile = transform_podfile(lockfile, nil, original_podfile)
+    #       dependency = Dependency.new("Mixpanel", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Mixpanel/1.0/Mixpanel.podspec.json"})
+    #       podfile.dependencies.should.include dependency
+    #     end
+    #
+    #     describe "which is a subspec" do
+    #       it "should transform to Root Podspec URL" do
+    #         lockfile = Lockfile.new({
+    #           "PODS" => ["Google/Analytics (1.0)"]
+    #         })
+    #         original_podfile = Podfile.new do |p|
+    #           p.pod "Google/Analytics"
+    #         end
+    #
+    #         podfile = transform_podfile(lockfile, nil, original_podfile)
+    #         dependency = Dependency.new("Google/Analytics", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Google/1.0/Google.podspec.json"})
+    #         podfile.dependencies.should.include dependency
+    #       end
+    #     end
+    #   end
+    # end
   end
 end
