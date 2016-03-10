@@ -14,6 +14,11 @@ module Pod
       Podfile.from_hash(new_hash, podfile.defined_in_file)
     end
 
+    def transform_dependency_name(name)
+      dependency_hash = transform_dependency(name)
+      parse_dependency(dependency_hash)
+    end
+
     private
 
     def generate_dependency_hash_for_spec(spec)
@@ -60,11 +65,10 @@ module Pod
       dependency = parse_dependency(name_or_hash)
 
       unless dependency.external_source
-
         root_pod = dependency.root_name
         pod = dependency.name
         version = @lockfile.version(pod)
-        raise "Missing dependency in Lockfile please run `pod install` or `pod update`." unless version
+        raise Informative, "Missing dependency \"#{pod}\" in Lockfile please run `pod install` or `pod update`." unless version
 
         ({ "#{pod}" => [{ :podspec => podspec_url(root_pod, version) }] })
       else

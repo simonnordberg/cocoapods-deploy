@@ -47,7 +47,8 @@ module Pod
       # Installed required sources.
       def install_sources_for_lockfile
         config.lockfile.pod_names.each do |dep|
-          puts dep
+          transformer = DeployTransformer.new(config.lockfile)
+          dep = transformer.transform_dependency_name(dep)
           source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
           source.fetch(config.sandbox)
         end
