@@ -181,28 +181,27 @@ module Pod
 
         setup_enviroment
         verify_enviroment
-        return
 
-        UI.puts("- Deploying Pods")
+        # UI.puts("- Deploying Pods")
+        #
+        # config.lockfile.pod_names.each do |pod|
+        #   version = config.lockfile.version(pod)
+        #   UI.puts("- Deploying #{pod} #{version}")
+        #   transform_pod_and_version(pod, version)
+        # end
 
-        config.lockfile.pod_names.each do |pod|
-          version = config.lockfile.version(pod)
-          UI.puts("- Deploying #{pod} #{version}")
-          transform_pod_and_version(pod, version)
-        end
-
-        run_install_with_update(false)
+      #  run_install_with_update(false)
       end
 
       def run_install_with_update(update)
 
         #TODO: Somehow use a custom dependencies_to_lock_pod_named in the lockfile
         #TODO: Work out way of transforming dependencies without patch
-        apply_dependency_patches
-
-        installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
-        installer.update = update
-        installer.install!
+        # apply_dependency_patches
+        #
+        # installer = DeployInstaller.new(config.sandbox, config.podfile, config.lockfile)
+        # installer.update = update
+        # installer.install!
       end
     end
   end
