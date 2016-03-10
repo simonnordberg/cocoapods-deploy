@@ -14,6 +14,13 @@ module Pod
       Podfile.from_hash(new_hash, podfile.defined_in_file)
     end
 
+    def transform_specification_for_sandbox(spec, sandbox)
+      # - Check dependencies for Podspecs if they are a subspec and include them
+      #   and version lock them to their parent spec.
+      #
+      # - Otherwise we need download them.
+    end
+
     private
 
     def transform_internal_hash(hash)
@@ -67,13 +74,6 @@ module Pod
       else
         name_or_hash
       end
-    end
-
-    def transform_specification_for_sandbox(spec, sandbox)
-      # - Check dependencies for Podspecs if they are a subspec and include them
-      #   and version lock them to their parent spec.
-      #
-      # - Otherwise we need download them.
     end
   end
 end
