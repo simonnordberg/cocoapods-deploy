@@ -50,7 +50,6 @@ module Pod
       #
       # TODO: BDD
       def apply_resolver_patch
-
         Resolver.class_eval do
           def find_cached_set(dependency)
             name = dependency.root_name
@@ -90,14 +89,6 @@ module Pod
         verify_environment
 
         apply_resolver_patch
-
-        #TODO: Update this so we get the pods actually used in the lockfile.
-        # - Then we use this as a look up for the podfile.
-        # - We map the ones we match to the lockfile
-        # - We leave it to the resolver to notice there is something missing
-        # - When it does notice this we catch the error and replace it with something
-        # more informative
-        # - Somehow need to make sure platform ones are ignored.
 
         #Install the sources from the lockfile
         install_sources_for_lockfile
