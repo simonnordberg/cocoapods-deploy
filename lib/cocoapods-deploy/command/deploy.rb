@@ -47,6 +47,8 @@ module Pod
       # Applies patch to resolver as it needs help being pointed to use the
       # local podspecs due to limitations in CocoaPods. We may be able to remove
       # this in the future.
+      #
+      # TODO: BDD
       def apply_resolver_patch
 
         Resolver.class_eval do
