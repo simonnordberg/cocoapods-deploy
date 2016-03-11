@@ -72,7 +72,7 @@ module Pod
       def install_sources_for_lockfile
 
         lockfile_hash = config.lockfile.to_hash
-        pods_hash = internal_data['PODS']
+        pods_hash = lockfile_hash['PODS']
 
         pods.each do |pod|
           pod = pod.keys.first if pod.is_a?(Hash)
