@@ -70,6 +70,10 @@ module Pod
 
       # Installed required sources.
       def install_sources_for_lockfile
+
+        puts config.lockfile.to_hash
+        exit
+
         config.lockfile.pod_names.each do |dep|
           transformer = DeployTransformer.new(config.lockfile, config.sandbox)
           dep = transformer.transform_dependency_name(dep)
