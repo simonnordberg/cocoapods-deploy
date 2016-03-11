@@ -71,14 +71,23 @@ module Pod
       # Installed required sources.
       def install_sources_for_lockfile
 
-        puts config.lockfile.to_hash
-        exit
+        lockfile_hash = config.lockfile.to_hash
+        pods_hash = internal_data['PODS']
 
-        config.lockfile.pod_names.each do |dep|
+        pods.each do |pod|
+          pod = pod.keys.first unless pod.is_a?(String)
+
+          # TODO: Download Internal
+
           transformer = DeployTransformer.new(config.lockfile, config.sandbox)
-          dep = transformer.transform_dependency_name(dep)
+          dep = transformer.transform_dependency_name(pod)
           source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
           source.fetch(config.sandbox)
+        end
+
+        puts pods_hash
+        exit
+
         end
       end
 
