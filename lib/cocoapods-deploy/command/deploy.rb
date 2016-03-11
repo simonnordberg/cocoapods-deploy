@@ -68,27 +68,31 @@ module Pod
         end
       end
 
-      # Installed required sources.
+      # Installs required sources for lockfile.
       def install_sources_for_lockfile
 
         lockfile_hash = config.lockfile.to_hash
         pods_hash = internal_data['PODS']
 
         pods.each do |pod|
-          pod = pod.keys.first unless pod.is_a?(String)
+          pod = pod.keys.first if pod.is_a?(Hash)
+          install_sources_for_pod(pod)
 
-          # TODO: Download Internal
-
-          transformer = DeployTransformer.new(config.lockfile, config.sandbox)
-          dep = transformer.transform_dependency_name(pod)
-          source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
-          source.fetch(config.sandbox)
+          if pod.is_a?(Hash)
+            pods = pod.values.first
+            pods.each do |pod|
+              install_sources_for_pod(pod)
+            end
+          end
         end
+      end
 
-        puts pods_hash
-        exit
-
-        end
+      # Installs required sources for pod.
+      def install_sources_for_pod(pod)
+        transformer = DeployTransformer.new(config.lockfile, config.sandbox)
+        dep = transformer.transform_dependency_name(pod)
+        source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
+        source.fetch(config.sandbox)
       end
 
       # Triggers the CocoaPods install process
