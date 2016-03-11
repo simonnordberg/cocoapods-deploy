@@ -44,6 +44,29 @@ module Pod
         transformer.transform_podfile(config.podfile)
       end
 
+      # Applies patch to resolver as it needs help being pointed to use the
+      # local podspecs due to limitations in CocoaPods. We may be able to remove
+      # this in the future.
+      def apply_resolver_patch
+
+        Resolver.class_eval do
+          def find_cached_set(dependency)
+            name = dependency.root_name
+
+            unless cached_sets[name]
+              spec = sandbox.specification(name)
+              set = Specification::Set::External.new(spec)
+              cached_sets[name] = set
+              unless set
+                raise Molinillo::NoSuchDependencyError.new(dependency) # rubocop:disable Style/RaiseArgs
+              end
+            end
+
+            cached_sets[name]
+          end
+        end
+      end
+
       # Installed required sources.
       def install_sources_for_lockfile
         config.lockfile.pod_names.each do |dep|
@@ -64,12 +87,15 @@ module Pod
         setup_environment
         verify_environment
 
+        apply_resolver_patch
+
         #TODO: Update this so we get the pods actually used in the lockfile.
         # - Then we use this as a look up for the podfile.
         # - We map the ones we match to the lockfile
         # - We leave it to the resolver to notice there is something missing
         # - When it does notice this we catch the error and replace it with something
         # more informative
+        # - Somehow need to make sure platform ones are ignored.
 
         #Install the sources from the lockfile
         install_sources_for_lockfile
