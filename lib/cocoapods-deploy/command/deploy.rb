@@ -90,7 +90,6 @@ module Pod
 
         apply_resolver_patch
 
-        #Install the sources from the lockfile
         install_sources_for_lockfile
         install(transform_podfile)
       end
