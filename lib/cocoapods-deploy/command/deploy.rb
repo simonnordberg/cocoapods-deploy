@@ -48,9 +48,13 @@ module Pod
       # local podspecs due to limitations in CocoaPods. We may be able to remove
       # this in the future.
       #
+      # In the future passing the lockfile into the resolve is hacked
+      # potentially we could have a special deploy subclass.
+      #
       # TODO: BDD
       def apply_resolver_patch
         Resolver.class_eval do
+
           def find_cached_set(dependency)
             name = dependency.root_name
 
@@ -65,25 +69,27 @@ module Pod
 
             cached_sets[name]
           end
+
+          def dependencies_for(specification)
+            dependencies = specification.all_dependencies.select { |dep|
+              Config.instance.lockfile.version(dep.root_name) != nil
+            }
+
+            dependencies.map do |dependency|
+              if dependency.root_name == Specification.root_name(specification.name)
+                dependency.dup.tap { |d| d.specific_version = specification.version }
+              else
+                dependency
+              end
+            end
+          end
         end
       end
 
-      # Installs required sources for lockfile.
+      # Installs required sources for lockfile - TODO: Simplify code
       def install_sources_for_lockfile
-
-        lockfile_hash = config.lockfile.to_hash
-        pods_hash = lockfile_hash['PODS']
-
-        pods_hash.each do |pod|
-          pod = pod.keys.first if pod.is_a?(Hash)
+        config.lockfile.pod_names.each do |pod|
           install_sources_for_pod(pod)
-
-          if pod.is_a?(Hash)
-            pods = pod.values.first
-            pods.each do |pod|
-              install_sources_for_pod(pod)
-            end
-          end
         end
       end
 

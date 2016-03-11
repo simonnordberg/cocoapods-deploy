@@ -141,6 +141,8 @@ module Pod
 
       # TODO: Reducing duplicates
 
+      # TODO: Patches
+
       # Figure out how to test external source here.
 
       # Figure out how to handle location
