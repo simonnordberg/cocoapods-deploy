@@ -75,9 +75,7 @@ module Pod
           end
           @sandbox.stubs(:specification).returns(spec)
 
-          lockfile = Lockfile.new({
-            "PODS" => ["GoogleAnalytics (1.0)"]
-          })
+          lockfile = Lockfile.new({})
           original_podfile = Podfile.new do |p|
             p.pod "GoogleAnalytics"
           end
