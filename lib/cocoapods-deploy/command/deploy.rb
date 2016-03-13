@@ -100,7 +100,8 @@ module Pod
 
         # TODO: Modify with custom external source which downloads for multiple
         # sources
-        # 
+        #
+        # TODO: Patch self.concrete_class_from_params for ExternalSources
         source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
         source.fetch(config.sandbox)
       end
@@ -115,6 +116,7 @@ module Pod
         setup_environment
         verify_environment
 
+        # TODO: BDD Patch
         apply_resolver_patch
 
         install_sources_for_lockfile
