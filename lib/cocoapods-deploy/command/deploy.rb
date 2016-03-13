@@ -97,6 +97,10 @@ module Pod
       def install_sources_for_pod(pod)
         transformer = DeployTransformer.new(config.lockfile, config.sandbox)
         dep = transformer.transform_dependency_name(pod)
+
+        # TODO: Modify with custom external source which downloads for multiple
+        # sources
+        # 
         source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
         source.fetch(config.sandbox)
       end

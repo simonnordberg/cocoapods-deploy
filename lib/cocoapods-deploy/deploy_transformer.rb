@@ -63,6 +63,8 @@ module Pod
       end
     end
 
+    # TODO: Modify with placeholder
+    # i.e {root-url}/pod/verion/pod.podspec
     def podspec_url(pod, version)
       "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
     end
