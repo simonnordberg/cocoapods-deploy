@@ -9,7 +9,9 @@ module Pod
   describe DeployTransformer do
     describe "when transforming podfile" do
       it "should preserve external dependencies" do
-        lockfile = Lockfile.new({})
+        lockfile = Lockfile.new({
+          "CHECKOUT OPTIONS" => {"Polly" => {:git => "http://example.org"} }
+        })
         original_podfile = Podfile.new do |p|
           p.pod "Polly", :git => "http://example.org"
         end
