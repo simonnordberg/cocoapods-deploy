@@ -64,7 +64,7 @@ module Pod
     end
 
     def podspec_url(pod, version)
-      "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
+      "{root-url}/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
     end
 
     def collect_podspec_dependencies(name_or_hash)

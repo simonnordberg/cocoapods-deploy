@@ -97,8 +97,9 @@ module Pod
       def install_sources_for_pod(pod)
         transformer = DeployTransformer.new(config.lockfile, config.sandbox)
         dep = transformer.transform_dependency_name(pod)
-        source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
-        source.fetch(config.sandbox)
+
+        downloader = DeployDownloader.new(dep)
+        downloader.download(config)
       end
 
       # Triggers the CocoaPods install process
@@ -111,6 +112,7 @@ module Pod
         setup_environment
         verify_environment
 
+        # TODO: BDD Patch
         apply_resolver_patch
 
         install_sources_for_lockfile

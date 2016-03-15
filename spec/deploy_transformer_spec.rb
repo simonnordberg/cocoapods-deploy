@@ -1,4 +1,4 @@
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __FILE__)
 
 def transform_podfile(lockfile, sandbox, podfile)
   transformer = Pod::DeployTransformer.new(lockfile, sandbox)
@@ -42,7 +42,7 @@ module Pod
           end
 
           podfile = transform_podfile(lockfile, nil, original_podfile)
-          dependency = Dependency.new("Mixpanel", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Mixpanel/1.0/Mixpanel.podspec.json"})
+          dependency = Dependency.new("Mixpanel", {:podspec => "{root-url}/master/Specs/Mixpanel/1.0/Mixpanel.podspec.json"})
           podfile.dependencies.should.include dependency
         end
 
@@ -56,7 +56,7 @@ module Pod
             end
 
             podfile = transform_podfile(lockfile, nil, original_podfile)
-            dependency = Dependency.new("Google/Analytics", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Google/1.0/Google.podspec.json"})
+            dependency = Dependency.new("Google/Analytics", {:podspec => "{root-url}/master/Specs/Google/1.0/Google.podspec.json"})
             podfile.dependencies.should.include dependency
           end
         end
@@ -100,7 +100,7 @@ module Pod
         end
 
         podfile = transform_podfile(lockfile, @sandbox, original_podfile)
-        dependency = Dependency.new("Google", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Google/1.0/Google.podspec.json"})
+        dependency = Dependency.new("Google", {:podspec => "{root-url}/master/Specs/Google/1.0/Google.podspec.json"})
         podfile.dependencies.should.include dependency
       end
 
@@ -119,16 +119,10 @@ module Pod
           end
 
           podfile = transform_podfile(lockfile, @sandbox, original_podfile)
-          dependency = Dependency.new("Mixpanel/Mixpanel", {:podspec => "https://raw.githubusercontent.com/CocoaPods/Specs/master/Specs/Mixpanel/1.0/Mixpanel.podspec.json"})
+          dependency = Dependency.new("Mixpanel/Mixpanel", {:podspec => "{root-url}/master/Specs/Mixpanel/1.0/Mixpanel.podspec.json"})
           podfile.dependencies.should.include dependency
         end
       end
-
-      # TODO: Reducing duplicates
-
-      # Figure out how to test external source here.
-
-      # TODO: Test collect_podspec_dependencies as well
     end
   end
 end

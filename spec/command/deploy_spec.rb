@@ -1,13 +1,5 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
-class MockExternalSource
-  def initialize
-  end
-
-  def fetch
-  end
-end
-
 module Pod
   describe Command::Deploy do
 
@@ -122,30 +114,17 @@ module Pod
         @transformer.stubs(:transform_dependency_name).with("Google/Analytics").returns(@dependency)
         DeployTransformer.stubs(:new).returns(@transformer)
 
-        @source = MockExternalSource.new
         @command.stubs(:transform_podfile).returns(@podfile)
         @command.stubs(:install)
       end
 
-      it 'should create new external source' do
-        ExternalSources.expects(:from_dependency).with(@dependency, @podfile.defined_in_file).returns(@source)
-        @source.stubs(:fetch)
+      it 'should download source' do
+        downloader = DeployDownloader.new(nil)
+        downloader.expects(:download)
+
+        DeployDownloader.stubs(:new).returns(downloader)
         @command.run
       end
-
-      it 'should fetch source' do
-        ExternalSources.stubs(:from_dependency).returns(@source)
-        @source.expects(:fetch)
-        @command.run
-      end
-
-      # TODO: Reducing duplicates
-
-      # TODO: Patches
-
-      # Figure out how to test external source here.
-
-      # Figure out how to handle location
     end
   end
 end
