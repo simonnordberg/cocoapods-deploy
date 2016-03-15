@@ -139,13 +139,20 @@ module Pod
         @command.run
       end
 
-      # TODO: Reducing duplicates
+      describe 'when pod is from non master repo source' do
 
-      # TODO: Patches
+        it 'should fetch source from other repo' do
 
-      # Figure out how to test external source here.
+          # - Pod should be defined in Pod and Lockfile
+          # - Pod should define another repo source
+          # - Download method should try each source until it gets a hit
+          # - If there isn't a hit then it should forward the method.
 
-      # Figure out how to handle location
+          # ExternalSources.stubs(:from_dependency).returns(@source)
+          # @source.expects(:fetch)
+          # @command.run
+        end
+      end
     end
   end
 end

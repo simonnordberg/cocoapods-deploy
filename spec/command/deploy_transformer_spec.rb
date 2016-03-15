@@ -123,12 +123,6 @@ module Pod
           podfile.dependencies.should.include dependency
         end
       end
-
-      # TODO: Reducing duplicates
-
-      # Figure out how to test external source here.
-
-      # TODO: Test collect_podspec_dependencies as well
     end
   end
 end
