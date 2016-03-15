@@ -125,10 +125,6 @@ module Pod
         transformer = DeployTransformer.new(config.lockfile, config.sandbox)
         dep = transformer.transform_dependency_name(pod)
 
-        # TODO: Modify with custom external source which downloads for multiple
-        # sources
-        #
-        # TODO: Patch self.concrete_class_from_params for ExternalSources
         source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
         source.fetch(config.sandbox)
       end
