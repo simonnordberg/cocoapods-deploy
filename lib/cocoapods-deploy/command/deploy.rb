@@ -44,33 +44,6 @@ module Pod
         transformer.transform_podfile(config.podfile)
       end
 
-      # Applies patch to external source so that it loops through all
-      # the sources when fetching to avoid 404s for pods not from
-      # the master repo.
-      #
-      def apply_external_source_patch
-        ExternalSources::PodspecSource.class_eval do
-          def fetch(sandbox)
-            title = "Fetching podspec for `#{name}` #{description}"
-            UI.titled_section(title,  :verbose_prefix => '-> ') do
-              podspec_path = Pathname(podspec_uri)
-              is_json = podspec_path.extname == '.json'
-              if podspec_path.exist?
-                store_podspec(sandbox, podspec_path, is_json)
-              else
-                require 'cocoapods/open-uri'
-                begin
-                  open(podspec_uri) { |io| store_podspec(sandbox, io.read, is_json) }
-                rescue OpenURI::HTTPError => e
-                  status = e.io.status.join(' ')
-                  raise Informative, "Failed to fetch podspec for `#{name}` at `#{podspec_uri}`.\n Error: #{status}"
-                end
-              end
-            end
-          end
-        end
-      end
-
       # Applies patch to resolver as it needs help being pointed to use the
       # local podspecs due to limitations in CocoaPods. We may be able to remove
       # this in the future.
@@ -125,8 +98,8 @@ module Pod
         transformer = DeployTransformer.new(config.lockfile, config.sandbox)
         dep = transformer.transform_dependency_name(pod)
 
-        source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
-        source.fetch(config.sandbox)
+        downloader = DeployDownloader.new(dep)
+        downloader.download(config)
       end
 
       # Triggers the CocoaPods install process
@@ -140,7 +113,6 @@ module Pod
         verify_environment
 
         # TODO: BDD Patch
-        apply_external_source_patch
         apply_resolver_patch
 
         install_sources_for_lockfile
