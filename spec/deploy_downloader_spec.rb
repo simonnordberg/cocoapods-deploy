@@ -15,8 +15,9 @@ module Pod
       @podfile = Podfile.new
       Config.instance.stubs(:podfile).returns(@podfile)
 
-      @downloader = DeployDownloader.new(nil)
-    
+      @dependency = Dependency.new("Pod", { :podspec => ""})
+      @downloader = DeployDownloader.new(@dependency)
+
       @source = MockExternalSource.new
       ExternalSources.stubs(:from_dependency).returns(@source)
     end
