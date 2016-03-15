@@ -24,7 +24,6 @@ module Pod
       downloader = DeployDownloader.new(dependency)
 
       @source.expects(:fetch)
-
       downloader.download(Config.instance)
     end
 
@@ -32,7 +31,7 @@ module Pod
       dependency = Dependency.new("AFNetworking", { :podspec => "{root-url}/master/Specs/AFNetworking/1.0/AFNetworking.podspec.json"})
       downloader = DeployDownloader.new(dependency)
 
-      ExternalSources.stubs(:from_dependency).returns(@source)
+      @source.expects(:fetch)
       downloader.download(Config.instance)
     end
   end
