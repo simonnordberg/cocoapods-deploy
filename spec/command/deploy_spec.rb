@@ -120,8 +120,9 @@ module Pod
 
       it 'should download source' do
         downloader = DeployDownloader.new(nil)
-        DeployDownloader.stubs(:new).returns(downloader)
         downloader.expects(:download)
+
+        DeployDownloader.stubs(:new).returns(downloader)
         @command.run
       end
     end
