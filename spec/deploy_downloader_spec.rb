@@ -12,14 +12,18 @@ module Pod
   describe DeployDownloader do
 
     before do
+      @podfile = Podfile.new
+      Config.instance.stubs(:podfile).returns(@podfile)
+
       @downloader = DeployDownloader.new(nil)
+    
       @source = MockExternalSource.new
+      ExternalSources.stubs(:from_dependency).returns(@source)
     end
 
     it "should download source from main repo" do
-      ExternalSources.stubs(:from_dependency).returns(@source)
       @source.expects(:fetch)
-      @downloader.download(nil)
+      @downloader.download(Config.instance)
     end
 
     it "should download source from external repo" do
