@@ -15,18 +15,23 @@ module Pod
       end
     end
 
-    #Download Normal
     def download_source(config)
       # TODO: Method for looping through dependency
       source = ExternalSources.from_dependency(dependency, config.podfile.defined_in_file)
       source.fetch(config.sandbox)
     end
 
-    #Download Podspecs
     def download_podspec(config)
-      # TODO: Method for looping through dependency
-      source = ExternalSources.from_dependency(dependency, config.podfile.defined_in_file)
-      source.fetch(config.sandbox)
+      dependencies_for_sources(config).each do |dep|
+        source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
+        source.fetch(config.sandbox)
+      end
+    end
+
+    private
+
+    def dependencies_for_sources(config)
+      []
     end
   end
 end
