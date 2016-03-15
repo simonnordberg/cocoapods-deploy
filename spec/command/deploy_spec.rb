@@ -1,13 +1,5 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
-class MockExternalSource
-  def initialize
-  end
-
-  def fetch
-  end
-end
-
 module Pod
   describe Command::Deploy do
 
@@ -122,37 +114,15 @@ module Pod
         @transformer.stubs(:transform_dependency_name).with("Google/Analytics").returns(@dependency)
         DeployTransformer.stubs(:new).returns(@transformer)
 
-        @source = MockExternalSource.new
         @command.stubs(:transform_podfile).returns(@podfile)
         @command.stubs(:install)
       end
 
-      it 'should create new external source' do
-        ExternalSources.expects(:from_dependency).with(@dependency, @podfile.defined_in_file).returns(@source)
-        @source.stubs(:fetch)
+      it 'should download source' do
+        downloader = DeployDownloader.new(nil)
+        DeployDownloader.stubs(:new).returns(downloader)
+        downloader.expects(:download)
         @command.run
-      end
-
-      it 'should fetch source' do
-        ExternalSources.stubs(:from_dependency).returns(@source)
-        @source.expects(:fetch)
-        @command.run
-      end
-
-      describe 'when pod is from non master repo source' do
-
-        it 'should fetch source from other repo' do
-
-
-          # - Pod should be defined in Pod and Lockfile
-          # - Pod should define another repo source
-          # - Download method should try each source until it gets a hit
-          # - If there isn't a hit then it should forward the method.
-
-          # ExternalSources.stubs(:from_dependency).returns(@source)
-          # @source.expects(:fetch)
-          # @command.run
-        end
       end
     end
   end
