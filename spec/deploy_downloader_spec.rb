@@ -15,16 +15,21 @@ module Pod
       @podfile = Podfile.new
       Config.instance.stubs(:podfile).returns(@podfile)
 
-      @dependency = Dependency.new("Pod", { :podspec => ""})
-      @downloader = DeployDownloader.new(@dependency)
-
       @source = MockExternalSource.new
       ExternalSources.stubs(:from_dependency).returns(@source)
     end
 
-    it "should download source from main repo" do
+    it "should external source outside of repo" do
+      dependency = Dependency.new("AFNetworkin", { :git => "https://github.com/gowalla/AFNetworking.git"})
+      downloader = DeployDownloader.new(dependency)
+
       @source.expects(:fetch)
-      @downloader.download(Config.instance)
+      downloader.download(Config.instance)
+    end
+
+    it "should download source from main repo" do
+      # @source.expects(:fetch)
+      # @downloader.download(Config.instance)
     end
 
     it "should download source from external repo" do
