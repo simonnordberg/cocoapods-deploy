@@ -20,7 +20,7 @@ module Pod
     end
 
     it "should external source outside of repo" do
-      dependency = Dependency.new("AFNetworkin", { :git => "https://github.com/gowalla/AFNetworking.git"})
+      dependency = Dependency.new("AFNetworking", { :git => "https://github.com/gowalla/AFNetworking.git"})
       downloader = DeployDownloader.new(dependency)
 
       @source.expects(:fetch)
@@ -28,11 +28,19 @@ module Pod
     end
 
     it "should download source from main repo" do
-      # @source.expects(:fetch)
-      # @downloader.download(Config.instance)
+      dependency = Dependency.new("AFNetworking", { :podspec => "http://github.com/CocoaPods/Specs.git/master/Specs/AFNetworking/1.0/AFNetworking.podspec.json"})
+      downloader = DeployDownloader.new(dependency)
+
+      @source.expects(:fetch)
+      downloader.download(Config.instance)
     end
 
     it "should download source from external repo" do
+      dependency = Dependency.new("AFNetworking", { :podspec => "http://github.com/My/Repo.git/master/Specs/AFNetworking/1.0/AFNetworking.podspec.json"})
+      downloader = DeployDownloader.new(dependency)
+
+      @source.expects(:fetch)
+      downloader.download(Config.instance)
     end
   end
 end
