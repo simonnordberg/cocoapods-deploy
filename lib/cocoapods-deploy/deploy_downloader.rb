@@ -26,7 +26,7 @@ module Pod
 
         begin
           return source.fetch
-        rescue
+        rescue Exception
         end
       end
 
