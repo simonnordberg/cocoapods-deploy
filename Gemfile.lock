@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cocoapods-deploy (0.0.6)
+    cocoapods-deploy (0.0.7)
 
 GEM
   remote: https://rubygems.org/
