@@ -64,7 +64,7 @@ module Pod
     end
 
     def podspec_url(pod, version)
-      "{root-url}/master/Specs/#{pod}/#{version}/#{pod}.podspec.json"
+      "{root-url}/#{pod}/#{version}/#{pod}"
     end
 
     def collect_podspec_dependencies(name_or_hash)

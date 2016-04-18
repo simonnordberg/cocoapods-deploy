@@ -25,8 +25,9 @@ module Pod
         source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
 
         begin
-          return source.fetch
+          return source.fetch(config.sandbox)
         rescue Exception
+          puts "Not Found"
         end
       end
 
@@ -42,11 +43,23 @@ module Pod
       podfile_sources(config).map do |source|
         filename = File.basename(source, ".*")
         raw_url = File.join( File.dirname(source), filename )
-        root_url = "#{raw_url}/raw"
-        source = @dependency.external_source[:podspec].gsub('{root-url}', root_url)
+        root_urls = [
+          "#{raw_url}/raw/master/Specs",
+          "#{raw_url}/raw/master"
+        ]
 
-        Dependency.new(@dependency.name, {:podspec => source})
-      end
+        root_urls.map do |url|
+          source = @dependency.external_source[:podspec].gsub('{root-url}', url)
+          dependencies_for_url(source)
+        end
+      end.flatten
+    end
+
+    def dependencies_for_url(url)
+      [
+        Dependency.new(@dependency.name, {:podspec => "#{url}.podspec"}),
+        Dependency.new(@dependency.name, {:podspec => "#{url}.podspec.json"})
+      ]
     end
   end
 end
