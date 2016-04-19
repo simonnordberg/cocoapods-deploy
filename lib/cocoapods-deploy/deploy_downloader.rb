@@ -35,7 +35,7 @@ module Pod
     end
 
     def podfile_sources(config)
-      return ["https://github.com/CocoaPods/CocoaPods.git"] if config.podfile.sources.empty?
+      return ["https://github.com/CocoaPods/Specs.git"] if config.podfile.sources.empty?
       return config.podfile.sources
     end
 
