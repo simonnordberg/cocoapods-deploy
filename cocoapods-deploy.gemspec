@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# stub: cocoapods-deploy 0.0.8 ruby lib
+# stub: cocoapods-deploy 0.0.9 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "cocoapods-deploy"
