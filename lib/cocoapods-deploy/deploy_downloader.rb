@@ -17,7 +17,7 @@ module Pod
 
     def download_source(config)
       source = ExternalSources.from_dependency(dependency, config.podfile.defined_in_file)
-      source.fetch
+      source.fetch(config.sandbox)
     end
 
     def download_podspec(config)
