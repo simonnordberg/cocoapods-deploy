@@ -23,7 +23,8 @@ module Pod
     def download_podspec(config)
       dependencies_for_sources(config).each do |dep|
         source = ExternalSources.from_dependency(dep, config.podfile.defined_in_file)
-
+        source.no_validate = true
+        
         begin
           return source.fetch(config.sandbox)
         rescue Exception

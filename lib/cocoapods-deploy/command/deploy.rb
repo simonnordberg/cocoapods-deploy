@@ -2,7 +2,7 @@ module Pod
   class Command
     class Deploy < Command
 
-      include Project
+      include ProjectDirectory
 
       self.summary = 'Install project dependencies to Podfile.lock versions without pulling down full podspec repo.'
 
@@ -18,14 +18,6 @@ module Pod
         # Disable Cocoapods Stats - Due to
         # https://github.com/CocoaPods/cocoapods-stats/issues/28
         ENV['COCOAPODS_DISABLE_STATS'] = "1"
-
-        # Disable updating of the CocoaPods Repo since we are directly
-        # deploying using Podspecs
-        config.skip_repo_update = true
-
-        # Disable cleaning of the source file since we are deploying
-        # and we don't need to keep things clean.
-        config.clean = false
       end
 
       # Verify the environment is ready for deployment
@@ -85,6 +77,28 @@ module Pod
           end
         end
       end
+      
+      # Applies patch to external sources to add a no_validate option which
+      # can be used to disable validation of downloaded podspecs. A normal install
+      # doesn't validate the podspecs of non-external pods even though certain
+      # podspecs are not entirely valid (for example an invalid license file type).
+      # This would mean the normal install command can install certain pods that deploy
+      # doesn't because of the validation. This patch makes sure validation doesn't 
+      # happen when deploy is being used.
+      #
+      # TODO: BDD      
+      def apply_external_sources_patch
+        ExternalSources::AbstractExternalSource.class_eval do
+          attr_accessor :no_validate
+              
+          old_validate_podspec = instance_method(:validate_podspec)
+              
+          def validate_podspec(podspec)
+            return if no_validate
+            old_validate_podspec(podspec)
+          end
+        end
+      end      
 
       # Installs required sources for lockfile - TODO: Simplify code
       def install_sources_for_lockfile
@@ -105,6 +119,15 @@ module Pod
       # Triggers the CocoaPods install process
       def install(podfile)
         installer = DeployInstaller.new(config.sandbox, podfile, nil)
+        
+        # Disable updating of the CocoaPods Repo since we are directly
+        # deploying using Podspecs
+        installer.repo_update = false
+
+        # Disable cleaning of the source file since we are deploying
+        # and we don't need to keep things clean.
+        installer.installation_options.clean = false        
+        
         installer.install!
       end
 
@@ -114,6 +137,7 @@ module Pod
 
         # TODO: BDD Patch
         apply_resolver_patch
+        apply_external_sources_patch
 
         install_sources_for_lockfile
         install(transform_podfile)
