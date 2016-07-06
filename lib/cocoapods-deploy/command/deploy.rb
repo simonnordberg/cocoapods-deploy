@@ -2,7 +2,7 @@ module Pod
   class Command
     class Deploy < Command
 
-      include Project
+      include ProjectDirectory
 
       self.summary = 'Install project dependencies to Podfile.lock versions without pulling down full podspec repo.'
 
@@ -18,14 +18,6 @@ module Pod
         # Disable Cocoapods Stats - Due to
         # https://github.com/CocoaPods/cocoapods-stats/issues/28
         ENV['COCOAPODS_DISABLE_STATS'] = "1"
-
-        # Disable updating of the CocoaPods Repo since we are directly
-        # deploying using Podspecs
-        config.skip_repo_update = true
-
-        # Disable cleaning of the source file since we are deploying
-        # and we don't need to keep things clean.
-        config.clean = false
       end
 
       # Verify the environment is ready for deployment
@@ -105,6 +97,15 @@ module Pod
       # Triggers the CocoaPods install process
       def install(podfile)
         installer = DeployInstaller.new(config.sandbox, podfile, nil)
+        
+        # Disable updating of the CocoaPods Repo since we are directly
+        # deploying using Podspecs
+        installer.repo_update = false
+
+        # Disable cleaning of the source file since we are deploying
+        # and we don't need to keep things clean.
+        installer.installation_options.clean = false        
+        
         installer.install!
       end
 
