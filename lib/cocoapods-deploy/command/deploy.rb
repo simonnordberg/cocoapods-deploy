@@ -95,7 +95,6 @@ module Pod
               
           def validate_podspec(podspec)
             return if no_validate
-            old_validate_podspec(podspec)
           end
         end
       end      
